@@ -3,7 +3,7 @@ from .components import Component
 import genomix
 
 
-class Runtime:
+class Genomix:
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self.g = None

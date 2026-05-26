@@ -1,5 +1,5 @@
 from .config import Config
-from .runtime import Runtime
+from .genomix import Genomix
 from .components import *
 from .external_publisher import ExternalPublisher
 
@@ -17,7 +17,7 @@ class RobotIO:
 
     def __init__(self, cfg: str):
         self.cfg = Config(cfg)
-        self.runtime = Runtime(self.cfg)
+        self.genonix = Genomix(self.cfg)
 
         self.components = {}
         self.publishers = {}
@@ -25,15 +25,15 @@ class RobotIO:
         for name, component_cfg in self.cfg.components.items():
             component_type = getattr(component_cfg, 'type', name)
             component_cls = self.COMPONENT_CLASSES[component_type]
-            component = component_cls(self.cfg, name, io=self)
+            component = component_cls(self.cfg, name)
             self.components[name] = component
 
         print(f'init genomix...')
-        self.runtime.connect()
+        self.genonix.connect()
 
         for c in self.components.values():
             print(f'loading {c.name}...')
-            self.runtime.load(c)
+            self.genonix.load(c)
 
         for name, extpub_cfg in self.cfg.external_publishers.items():
             print(f'init external pub {name}...')

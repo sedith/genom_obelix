@@ -60,7 +60,7 @@ class Config(AttrDict):
 
         if 'rotorcraft' in self.components:
             self.components.rotorcraft.calib_file = self.root / 'calib' / self.components.rotorcraft.calib
-        self.log_dir = self.root / 'logs' / time.strftime("%y%m%d_%H%M%S")
+        self.log_dir = self.root / 'logs' / f'{config_file.stem}_{time.strftime("%y%m%d_%H%M%S")}'
 
         if 'ros2' not in yaml_dict or self.ros2 is None:
             self.ros2 = {'enabled': False}
