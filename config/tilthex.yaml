@@ -15,7 +15,7 @@ components:
     rotorcraft:
         type: rotorcraft
         serial: /dev/ttyACM0
-        calib: imucalib.json
+        calib: hexa2_260505.json
 
     mocap:
         type: qualisys
@@ -37,10 +37,10 @@ components:
             -
                 name: lidar
                 port: ros2/lio
+                offset: [0, 0, 0.109, 0, 0, 0]
             -
                 name: imu
                 port: rotorcraft/imu
-                offset: [0, 0, -0.109, 0, 0, 0]
 
     uavpos:
         type: uavpos

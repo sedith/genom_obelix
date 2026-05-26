@@ -124,6 +124,14 @@ def hamilton_prod(q1, q2):
     ])
 
 
+def skew(v):
+    """Return the skew symmetric matrix of a vector v."""
+    return np.array([
+        [0.0, -v[2], v[1]],
+        [v[2], 0.0, -v[0]],
+        [-v[1], v[0], 0.0],
+    ])
+
 ## host helper
 def is_localhost(host: str) -> bool:
     return host in ('localhost', '127.0.0.1', '::1', socket.gethostname())

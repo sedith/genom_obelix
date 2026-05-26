@@ -55,7 +55,25 @@
             <uri>model://mrsim-tilthex</uri>
             <name>tx</name>
         </include>
-        <link_name="imu_link">
+        <link name="sensors">
+                <inertial>
+                <mass>0.01</mass>
+                <inertia>
+                    <ixx>1e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                    <iyy>1e-5</iyy><iyz>0</iyz>
+                    <izz>1e-5</izz>
+                </inertia>
+            </inertial>
+            <pose>0 0 0.05 0 0 0</pose>
+            <visual name="lidar_visual">
+                <pose>0 0 0 0 0 0</pose>
+                <geometry>
+                    <cylinder>
+                        <radius>0.03</radius>
+                        <length>0.1</length>
+                    </cylinder>
+                </geometry>
+            </visual>
             <sensor name="imu" type="imu">
                 <always_on>1</always_on>
                 <update_rate>200</update_rate>
@@ -132,27 +150,6 @@
                     </linear_acceleration>
                 </imu>
             </sensor>
-        </link>
-        <link name="lidar_link">
-            <gravity>0</gravity>
-            <inertial>
-                <mass>0.1</mass>
-                <inertia>
-                    <ixx>1e-5</ixx><ixy>0</ixy><ixz>0</ixz>
-                    <iyy>1e-5</iyy><iyz>0</iyz>
-                    <izz>1e-5</izz>
-                </inertia>
-            </inertial>
-            <pose>0 0 0 0 0 0</pose>
-            <visual name="laser_visual">
-                <pose>0 0 0.05 0 0 0</pose>
-                <geometry>
-                    <cylinder>
-                        <radius>0.03</radius>
-                        <length>0.1</length>
-                    </cylinder>
-                </geometry>
-            </visual>
             <sensor name="lidar" type="gpu_ray">
                 <pose>0 0 0.05 0 0 0</pose>
                 <always_on>1</always_on>
@@ -185,18 +182,22 @@
                 </ray>
             </sensor>
         </link>
-        <joint name="lidar_joint" type="fixed">
+        <joint name="sensors_joint" type="fixed">
             <parent>tx::base</parent>
-            <child>lidar_link</child>
+            <child>sensors</child>
         </joint>
     </model>
 
-    <plugin name="optitrack" filename="optitrack-gazebo.so">
+    <plugin name="optitrack" filename="optitrack-gazebo-2.0.so">
         <hz>1000</hz>
         <port>1509</port>
         <publish>
             <link>TX::tx::base</link>
             <name>TX</name>
+        </publish>
+        <publish>
+            <link>TX::sensors</link>
+            <name>lidar</name>
         </publish>
     </plugin>
 </world>

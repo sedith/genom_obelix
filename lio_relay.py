@@ -5,7 +5,7 @@ import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
 from genomstack import RobotIO, Config
-from genomstack.utils import quat2euler
+from genomstack.utils import quat2euler, quat2rot
 
 
 def jacobian_euler2quat(q):
@@ -41,31 +41,36 @@ def jacobian_euler2quat(q):
     return J
 
 
-def odom_to_pom_measure(msg: Odometry, cov: dict) -> dict:
-    s = msg.header.stamp
-    p = msg.pose.pose.position
-    q = msg.pose.pose.orientation
-    v = msg.twist.twist.linear
-    w = msg.twist.twist.angular
+def odom_to_pom_measure(msg: Odometry, cov: dict, repub_vel: bool=False) -> dict:
+    p = [msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z]
+    q = [msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z]
+    v_b = [msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z]
+    w_b = [msg.twist.twist.angular.x, msg.twist.twist.angular.y, msg.twist.twist.angular.z]
 
-    J = jacobian_euler2quat([q.w, q.x, q.y, q.z])
+    ## twist in world frame
+    r_wb = quat2rot(q)
+    v_w = list(r_wb @ v_b)
+    w_w = list(r_wb @ w_b)
+
+    ## covariance
+    J = jacobian_euler2quat(quat2euler(q))
     cov_q = J @ cov['eul'] @ J.T
 
     return {
         'measure': {
-            'ts': {'sec': s.sec, 'nsec': s.nanosec},
+            'ts': {'sec': 0, 'nsec': 0},
             'intrinsic': 0,
-            'pos': {'x': p.x, 'y': p.y, 'z': p.z},
-            'att': {'qw': q.w, 'qx': q.x, 'qy': q.y, 'qz': q.z},
-            'vel': {'vx': v.x, 'vy': v.y, 'vz': v.z},
-            'avel': {'wx': w.x, 'wy': w.y, 'wz': w.z},
+            'pos': {'x': p[0], 'y': p[1], 'z': p[2]},
+            'att': {'qw': q[0], 'qx': q[1], 'qy': q[2], 'qz': q[3]},
+            'vel': {'vx': v_w[0], 'vy': v_w[1], 'vz': v_w[2]} if repub_vel else None,
+            'avel': {'wx': w_w[0], 'wy': w_w[1], 'wz': w_w[2]} if repub_vel else None,
             'acc': None,
             'aacc': None,
             'pos_cov': {'cov': cov['p']},
             'att_cov': {'cov': list(cov_q[np.tril_indices(4)])},
-            'att_pos_cov': None,
-            'vel_cov': {'cov': cov['v']},
-            'avel_cov': {'cov': cov['w']},
+            'att_pos_cov': {'cov': [0] * 12},
+            'vel_cov': {'cov': cov['v']} if repub_vel else None,
+            'avel_cov': {'cov': cov['w']} if repub_vel else None,
             'acc_cov': None,
             'aacc_cov': None,
         }
@@ -83,9 +88,10 @@ def main():
     topic = '/rko_lio/odometry'
     publisher_name = 'lidar'
     std_p = 0.001
-    std_eul = 0.001
+    std_eul = 0.1
     std_v = 0.1
     std_w = 0.1
+    repub_vel = True
 
     cov = {}
     cov['p'] = list((np.eye(3) * std_p ** 2)[np.tril_indices(3)])
@@ -98,7 +104,7 @@ def main():
 
     def callback(msg):
         print(msg.pose.pose.position)
-        io.publish(publisher_name, odom_to_pom_measure(msg, cov))
+        io.publish(publisher_name, odom_to_pom_measure(msg, cov, repub_vel))
 
     node.create_subscription(
         Odometry,

@@ -20,6 +20,9 @@ class Rotorcraft(Component):
 
         if self.component_cfg.calib:
             calib = json.load(open(self.component_cfg.calib_file))
+            calib['imu_calibration']['astddev'] = [
+                s*10 for s in calib['imu_calibration']['astddev']
+            ]
             self.call('set_imu_calibration', calib)
 
         self.connect_port('rotor_input', 'uavatt/rotor_input')

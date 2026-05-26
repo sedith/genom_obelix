@@ -16,32 +16,25 @@
         max_iterations: 100
 
         max_correspondance_distance: 0.5
-        max_expected_jerk: 3.0
+        max_expected_jerk: 10.0
         max_num_threads: 0
         max_points_per_voxel: 20
-        max_range: 40.0
-        min_range: 1.5
-        min_beta: 200.0
+        max_range: 25.0
+        min_range: 1.2
+        min_beta: 80.0
         voxel_size: 0.5
 
         initialization_phase: true
-        lts_absolute_end_threshold_ms: 1
-        lts_absolute_start_threshold_ms: 1
-        lts_force_absolute: false
-        lts_force_relative: false
-        lts_multiplier_to_seconds: 0.0
-        lts_relative_end_threshold_ms: 10
-        lts_relative_start_threshold_ms: 10
+        lidar_timestamps:
+            multiplier_to_seconds: 0.0
+            force_absolute: false
+            force_relative: false
         
         invert_odom_tf: false
         publish_deskewed_scan: false
         publish_lidar_acceleration: false
         publish_local_map: true
         publish_map_after: 1.0
-
-        lidar_timestamps.multiplier_to_seconds: 1.0e-9
-        lidar_timestamps.force_absolute: true
-        lidar_timestamps.force_relative: false
 
         # dump_results: false
         # results_dir: results

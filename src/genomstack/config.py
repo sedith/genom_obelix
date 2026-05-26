@@ -62,6 +62,12 @@ class Config(AttrDict):
             self.components.rotorcraft.calib_file = self.root / 'calib' / self.components.rotorcraft.calib
         self.log_dir = self.root / 'logs' / time.strftime("%y%m%d_%H%M%S")
 
+        if 'ros2' not in yaml_dict or self.ros2 is None:
+            self.ros2 = {'enabled': False}
+
+        if 'external_publishers' not in yaml_dict or self.external_publishers is None:
+            self.external_publishers = {}
+
 
 def load_config(config_file: str | Path) -> Config:
     return Config(config_file=config_file)

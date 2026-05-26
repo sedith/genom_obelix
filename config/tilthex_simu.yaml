@@ -36,15 +36,16 @@ components:
         meas:
             -
                 name: lidar
-                port: /tmp/pom_lidar
+                # port: tmp/pom_lidar
+                port: mocap/bodies/lidar
             -
                 name: imu
                 port: rotorcraft/imu
-                offset: [0, 0, -0.109, 0, 0, 0]
+                offset: [0, 0, -0.05, 0, 0, 0]
 
     uavpos:
         type: uavpos
-        xyradius: 2
+        xyradius: 1
         gain:
             Kpxy: 10
             Kpz: 10
@@ -63,29 +64,29 @@ components:
 
     maneuver:
         type: maneuver
-        vmax: 1
-        wmax: 2
-        amax: 3
-        dwmax: 2
+        vmax: 3
+        wmax: 3
+        amax: 4
+        dwmax: 4
 
 external_publishers:
-    lidar:
-        target: pom_lidar
-        publisher: measure
-        port: measure/imu
-        path: tmp/pom_lidar
+#     lidar:
+#         target: pom_lidar
+#         publisher: measure
+#         port: measure/imu
+#         path: tmp/pom_lidar
 
 ros2:
-    enabled: true
-    domain_id: 42
-    rviz: false
-    mode: gazebo  # none, livox or gazebo
-    setup:
-        - /opt/ros/humble/setup.bash
-        - ~/work/ws_livox/ros2/install/setup.bash
-    bag:
-      - /rko_lio/odometry
-      - /tf
-      - /tf_static
-      - /livox/lidar
-      - /livox/imu
+    enabled: false
+#     domain_id: 42
+#     rviz: false
+#     mode: gazebo  # none, livox or gazebo
+#     setup:
+#         - /opt/ros/humble/setup.bash
+#         - ~/work/ws_livox/ros2/install/setup.bash
+#     bag:
+#       - /rko_lio/odometry
+#       - /tf
+#       - /tf_static
+#       - /livox/lidar
+#       - /livox/imu

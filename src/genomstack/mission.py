@@ -46,10 +46,10 @@ class Mission:
         self.io.cfg.log_dir.mkdir(parents=True, exist_ok=True)
         if is_localhost(self.io.cfg.host):
             for f in Path('/tmp/genom_obelix/').glob('*'):
-                os.rename(str(f), f'{self.io.cfg.log_dir}/{f}')
+                os.rename(str(f), f'{self.io.cfg.log_dir}/{f.name}')
         else:
-            subprocess.run(['scp', f'{self.io.cfg.host}:/tmp/genom_obelix/*', f'{self.io.cfg.log_dir}'], check=True)
-            subprocess.run(['ssh', self.io.cfg.host, 'rm -fd /tmp/genom_obelix/*'], check=True)
+            subprocess.run(['scp', '-r', f'{self.io.cfg.host}:/tmp/genom_obelix/*', f'{self.io.cfg.log_dir}'], check=True)
+            subprocess.run(['ssh', self.io.cfg.host, 'rm -r /tmp/genom_obelix/*'], check=True)
 
 
     ## mission helpers
@@ -58,21 +58,21 @@ class Mission:
         self.start_logs()
         self.io.components['rotorcraft'].call('start')
 
-    def start(self, prompt=False) -> None:
+    def start(self, z_start=0.25, ramp_duration=5, prompt=False) -> None:
         if prompt:
             input('start?')
         print(f'starting...')
         self.io.components['rotorcraft'].call('servo', ack=True)
         self.io.components['maneuver'].call('set_current_state')
-        self.io.components['maneuver'].call('take_off', 0.25, 5, ack=True)
+        self.io.components['maneuver'].call('take_off', z_start, ramp_duration, ack=True)
         self.io.components['uavpos'].call('servo', ack=True)
         self.io.components['uavatt'].call('servo', ack=True)
         print('done')
 
-    def takeoff(self, z=0.6, duration=0, prompt=False) -> None:
+    def take_off(self, z=0.6, duration=0, prompt=False) -> None:
         if prompt:
-            input('takeoff?')
-        print(f'takeoff: {z:.2f} [m]')
+            input('take_off?')
+        print(f'take_off: {z:.2f} [m]')
         self.io.components['maneuver'].call('take_off', z, duration, ack=True)
 
     def goto(self, x, y, z, yaw, duration=0, prompt=False) -> None:
@@ -81,7 +81,7 @@ class Mission:
         print(f'goto: {x:.2f} {y:.2f} {z:.2f} [m] -- {yaw:.2f} [rad] -- duration {duration}s')
         self.io.components['maneuver'].call('goto', x, y, z, yaw, duration, ack=True)
 
-    def land(self, z=0.25, duration=0, prompt=False) -> None:
+    def land(self, z=0.2, duration=0, prompt=False) -> None:
         if prompt:
             input('land?')
         print(f'landing: {z:.2f} [m]')
