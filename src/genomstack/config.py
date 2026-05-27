@@ -35,8 +35,6 @@ class AttrDict(dict):
 
 
 class Config(AttrDict):
-    """Robot config loaded from YAML, with derived fields added in Python."""
-
     def __init__(self, config_file: str | Path):
         root = find_workspace_root()
 

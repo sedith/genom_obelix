@@ -1,10 +1,10 @@
 /rko_lio:
     ros__parameters:
-        use_sim_time: false
+        use_sim_time: true
 
-        imu_frame: livox_imu
+        imu_frame: TX/livox/base/livox_imu
         imu_topic: /livox/imu
-        lidar_frame: livox_lidar
+        lidar_frame: TX/livox/base/livox_lidar
         lidar_topic: /livox/lidar
 
         base_frame: body_rko
@@ -12,7 +12,7 @@
         odom_topic: /rko_lio/odometry
         map_topic: /rko_lio/local_map
 
-        deskew: true
+        deskew: false
         double_downsample: false
         convergence_criterion: 1.0e-05
         max_iterations: 100

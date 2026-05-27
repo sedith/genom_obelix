@@ -1,7 +1,11 @@
 host: localhost
 plugin_path: ""
-
-mass: 2.5
+setup: 
+    - ~/.genom_env.sh
+    - /opt/ros/humble/setup.bash
+    - ~/work/ws_livox/ros2/install/setup.bash
+    
+mass: 2.765
 geom:
     rotors: 6
     armlen: 0.39
@@ -21,23 +25,22 @@ components:
         host: localhost
         port: "1509"
 
+    # pom_mocap:
+    #     type: pom
+    #     meas:
+    #         -
+    #             name: mocap
+    #             port: mocap/bodies/TX
+    #         -
+    #             name: imu
+    #             port: rotorcraft/imu
+
     pom_mocap:
         type: pom
         meas:
             -
-                name: mocap
-                port: mocap/bodies/TX
-            -
-                name: imu
-                port: rotorcraft/imu
-
-    pom_lidar:
-        type: pom
-        meas:
-            -
                 name: lidar
-                # port: tmp/pom_lidar
-                port: mocap/bodies/lidar
+                port: ros2/lio
             -
                 name: imu
                 port: rotorcraft/imu
@@ -70,20 +73,19 @@ components:
         dwmax: 4
 
 external_publishers:
-#     lidar:
-#         target: pom_lidar
-#         publisher: measure
-#         port: measure/imu
-#         path: tmp/pom_lidar
+    lidar:
+        target: pom_mocap
+        publisher: measure
+        port: ros2/lio
+
+sidecars:
+    lio_relay: python3 scripts/lio_relay.py tilthex_simu
 
 ros2:
-    enabled: false
-#     domain_id: 42
-#     rviz: false
-#     mode: gazebo  # none, livox or gazebo
-#     setup:
-#         - /opt/ros/humble/setup.bash
-#         - ~/work/ws_livox/ros2/install/setup.bash
+    enabled: true
+    domain_id: 42
+    launchfiles:
+        - launch_lio_gz.py
 #     bag:
 #       - /rko_lio/odometry
 #       - /tf

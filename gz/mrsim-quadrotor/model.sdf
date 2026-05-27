@@ -1,0 +1,177 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+<model name="mrsim-quadrotor">
+    <link name="base">
+        <inertial>
+            <mass>1.39</mass>
+            <inertia>
+                <ixx>0.015</ixx><ixy>0</ixy><ixz>0</ixz>
+                <iyy>0.015</iyy><iyz>0</iyz>
+                <izz>0.007</izz>
+            </inertia>
+        </inertial>
+
+
+        <collision name="base">
+            <geometry>
+                <cylinder><radius>0.08</radius><length>0.05</length></cylinder>
+            </geometry>
+        </collision>
+
+        <!-- three spheres to make contact stable -->
+        <collision name="land_1">
+            <pose>0.1 0 0 0 0 0</pose>
+            <geometry>
+                <sphere><radius>0.03</radius></sphere>
+            </geometry>
+        </collision>
+        <collision name="land_2">
+            <pose>-0.05 0.086 0 0 0 0</pose>
+            <geometry>
+                <sphere><radius>0.03</radius></sphere>
+            </geometry>
+        </collision>
+        <collision name="land_3">
+            <pose>-0.05 -0.086 0 0 0 0</pose>
+            <geometry>
+                <sphere><radius>0.03</radius></sphere>
+            </geometry>
+        </collision>
+
+        <!-- contact for the arms -->
+        <collision name="arm_1">
+            <pose>0.125 0 0 0 1.5708 0</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+        </collision>
+        <collision name="arm_2">
+            <pose>0 0.125 0 0 1.5708 1.5708</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+        </collision>
+        <collision name="arm_3">
+            <pose>-0.125 0 0 0 1.5708 0</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+        </collision>
+        <collision name="arm_4">
+            <pose>0 -0.125 0 0 1.5708 1.5708</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+        </collision>
+
+
+        <visual name="body">
+            <geometry>
+                <cylinder><radius>0.08</radius><length>0.05</length></cylinder>
+            </geometry>
+            <material>
+                <ambient>1.0 0.6 0.4 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="arm-1">
+            <pose>0.125 0 0 0 1.5708 0</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+            <material>
+                <ambient>1.0 0.4 0.4 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="arm-2">
+            <pose>0 0.125 0 0 1.5708 1.5708</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+            <material>
+                <ambient>0.6 0.6 0.6 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="arm-3">
+            <pose>-0.125 0 0 0 1.5708 0</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+            <material>
+                <ambient>0.6 0.6 0.6 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="arm-4">
+            <pose>0 -0.125 0 0 1.5708 1.5708</pose>
+            <geometry>
+                <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+            </geometry>
+            <material>
+                <ambient>0.6 0.6 0.6 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+    </link>
+
+
+    <include>
+        <uri>model://mrsim-rotor</uri>
+        <name>rotor_1</name>
+        <pose>0.23 0 0 0 0 0</pose>
+    </include>
+    <joint name="joint_rotor_1" type="revolute">
+        <parent>base</parent>
+        <child>rotor_1::propeller</child>
+        <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+        <uri>model://mrsim-rotor</uri>
+        <name>rotor_2</name>
+        <pose>0 0.23 0 0 0 0</pose>
+    </include>
+    <joint name="joint_rotor_2" type="revolute">
+        <parent>base</parent>
+        <child>rotor_2::propeller</child>
+        <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+        <uri>model://mrsim-rotor</uri>
+        <name>rotor_3</name>
+        <pose>-0.23 0 0 0 0 0</pose>
+    </include>
+    <joint name="joint_rotor_3" type="revolute">
+        <parent>base</parent>
+        <child>rotor_3::propeller</child>
+        <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+        <uri>model://mrsim-rotor</uri>
+        <name>rotor_4</name>
+        <pose>0 -0.23 0 0 0 0</pose>
+    </include>
+    <joint name="joint_rotor_4" type="revolute">
+        <parent>base</parent>
+        <child>rotor_4::propeller</child>
+        <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <plugin name="mrsim" filename="mrsim-gazebo-2.0.so">
+        <link>base</link>
+        <rotors>
+            <noise>0.03</noise>
+            <cf>5.9e-4</cf>
+            <ct>1e-5</ct>
+            <rotor><joint spin="cw">joint_rotor_1</joint></rotor>
+            <rotor><joint spin="ccw">joint_rotor_2</joint></rotor>
+            <rotor><joint spin="cw">joint_rotor_3</joint></rotor>
+            <rotor><joint spin="ccw">joint_rotor_4</joint></rotor>
+        </rotors>
+    </plugin>
+</model>
+</sdf>

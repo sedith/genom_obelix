@@ -8,8 +8,7 @@ from genomstack import RobotIO, Config
 from genomstack.utils import quat2euler, quat2rot
 
 
-def jacobian_euler2quat(q):
-    roll, pitch, yaw = quat2euler(q)
+def jacobian_euler2quat(roll, pitch, yaw):
 
     cr = np.cos(roll * 0.5)
     sr = np.sin(roll * 0.5)
@@ -53,7 +52,7 @@ def odom_to_pom_measure(msg: Odometry, cov: dict, repub_vel: bool=False) -> dict
     w_w = list(r_wb @ w_b)
 
     ## covariance
-    J = jacobian_euler2quat(quat2euler(q))
+    J = jacobian_euler2quat(*quat2euler(q))
     cov_q = J @ cov['eul'] @ J.T
 
     return {
@@ -102,8 +101,14 @@ def main():
     rclpy.init()
     node = Node('lio_relay')
 
+    global printed
+    printed = False
+
     def callback(msg):
-        print(msg.pose.pose.position)
+        global printed
+        if not printed:
+            printed = True
+            print(f'first pose retrieved, position: {msg.pose.pose.position.x:.3f}, {msg.pose.pose.position.y:.3f}, {msg.pose.pose.position.z:.3f}')
         io.publish(publisher_name, odom_to_pom_measure(msg, cov, repub_vel))
 
     node.create_subscription(
@@ -123,4 +128,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())
