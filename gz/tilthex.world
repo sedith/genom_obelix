@@ -17,8 +17,8 @@
     </physics>
 
     <light type="directional" name="sun">
-        <cast_shadows>true</cast_shadows>
-        <pose>0 0 10 0 0 0</pose>
+        <cast_shadows>false</cast_shadows>
+        <pose>0 0 9.5 0 0 0</pose>
         <diffuse>0.8 0.8 0.8 1</diffuse>
         <specular>0.2 0.2 0.2 1</specular>
         <attenuation>
@@ -46,6 +46,202 @@
                     <box>
                         <size>20 20 0.1</size>
                     </box>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+    </model>
+
+    <model name="textures">
+        <static>true</static>
+        <link name="wall_x">
+            <pose>10 0 5 0 0 1.57</pose>
+            <collision name="collision">
+                <geometry>
+                <box>
+                    <size>20 0.1 10.0</size>
+                </box>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>20 0.1 10.0</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="wall_y">
+           <pose>0 10 5 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                <box>
+                    <size>20 0.1 10.0</size>
+                </box>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>20 0.1 10.0</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="roof">
+            <pose>0 0 8 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                <box>
+                    <size>20 20 0.1</size>
+                </box>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>20 20 0.1</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="tpillar0">
+            <pose>0 5 2 0 0.79 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="hpillar1">
+            <pose>0 5 1 0 1.57 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="hpillar2">
+            <pose>5 0 1 1.57 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="hpillar3">
+            <pose>5 0 4 1.57 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>10</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="pillar1">
+            <pose>5 5 2 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>4</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>4</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="pillar2">
+            <pose>-5 5 3 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>6</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>6</length></cylinder>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+        <link name="pillar3">
+            <pose>5 -5 2 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>4</length></cylinder>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <cylinder><radius>0.5</radius><length>4</length></cylinder>
                 </geometry>
                 <material>
                     <ambient>0.8 0.8 0.8 1</ambient>

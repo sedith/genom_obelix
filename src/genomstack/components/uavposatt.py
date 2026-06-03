@@ -12,7 +12,7 @@ class UavPos(Component):
             'ix': 0,
         })
 
-        self.connect_port('state', 'pom_mocap/frame/robot')
+        self.connect_port('state', 'pom/frame/robot')
         self.connect_port('reference', 'maneuver/desired')
 
 
@@ -30,6 +30,6 @@ class UavAtt(Component):
             'wmax': 110,
         })
 
-        self.connect_port('state', 'pom_mocap/frame/robot')
+        self.connect_port('state', 'pom/frame/robot')
         self.connect_port('uav_input', 'uavpos/uav_input')
         self.connect_port('rotor_measure', 'rotorcraft/rotor_measure')

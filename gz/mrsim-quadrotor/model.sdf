@@ -12,7 +12,7 @@
         </inertial>
 
 
-        <collision name="base">
+        <collision name="body">
             <geometry>
                 <cylinder><radius>0.08</radius><length>0.05</length></cylinder>
             </geometry>
@@ -70,8 +70,7 @@
                 <cylinder><radius>0.08</radius><length>0.05</length></cylinder>
             </geometry>
             <material>
-                <ambient>1.0 0.6 0.4 1</ambient>
-                <diffuse>1.0 1.0 1.0 1</diffuse>
+                <diffuse>1.0 0.5 0.1 1</diffuse>
             </material>
         </visual>
         <visual name="arm-1">
@@ -80,8 +79,7 @@
                 <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
             </geometry>
             <material>
-                <ambient>1.0 0.4 0.4 1</ambient>
-                <diffuse>1.0 1.0 1.0 1</diffuse>
+                <diffuse>0.6 0.6 0.6 1</diffuse>
             </material>
         </visual>
         <visual name="arm-2">
@@ -90,8 +88,7 @@
                 <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
             </geometry>
             <material>
-                <ambient>0.6 0.6 0.6 1</ambient>
-                <diffuse>1.0 1.0 1.0 1</diffuse>
+                <diffuse>0.6 0.6 0.6 1</diffuse>
             </material>
         </visual>
         <visual name="arm-3">
@@ -100,8 +97,7 @@
                 <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
             </geometry>
             <material>
-                <ambient>0.6 0.6 0.6 1</ambient>
-                <diffuse>1.0 1.0 1.0 1</diffuse>
+                <diffuse>0.6 0.6 0.6 1</diffuse>
             </material>
         </visual>
         <visual name="arm-4">
@@ -110,8 +106,7 @@
                 <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
             </geometry>
             <material>
-                <ambient>0.6 0.6 0.6 1</ambient>
-                <diffuse>1.0 1.0 1.0 1</diffuse>
+                <diffuse>0.6 0.6 0.6 1</diffuse>
             </material>
         </visual>
     </link>

@@ -25,8 +25,7 @@
           <cylinder><radius>0.015</radius><length>0.03</length></cylinder>
         </geometry>
         <material>
-          <ambient>0.1 0.1 0.1 1</ambient>
-          <diffuse>1.0 1.0 1.0 1</diffuse>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
         </material>
       </visual>
 
@@ -36,8 +35,7 @@
           <cylinder><radius>0.002</radius><length>0.01</length></cylinder>
         </geometry>
         <material>
-          <ambient>0.1 0.1 0.1 1</ambient>
-          <diffuse>1.0 1.0 1.0 1</diffuse>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
         </material>
       </visual>
 
@@ -47,8 +45,7 @@
           <box><size>0.25 0.03 0.002</size></box>
         </geometry>
         <material>
-          <ambient>0.1 0.1 0.1 1</ambient>
-          <diffuse>1.0 1.0 1.0 1</diffuse>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
         </material>
       </visual>
     </link>

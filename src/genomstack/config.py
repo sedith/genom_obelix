@@ -55,6 +55,7 @@ class Config(AttrDict):
 
         self.root = root
         self.config_file = config_file
+        self.tmp_dir = '/tmp/genom_obelix/'
 
         if 'rotorcraft' in self.components:
             self.components.rotorcraft.calib_file = self.root / 'calib' / self.components.rotorcraft.calib

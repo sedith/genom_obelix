@@ -61,8 +61,8 @@ def main():
     if len(sys.argv) != 2:
         print('usage: python3 ros2/bag_record.py <config name>.yaml')
         return 1
-
     config_arg = sys.argv[1]
+    
     cfg = Config(config_arg)
 
     if not cfg.ros2.enabled:

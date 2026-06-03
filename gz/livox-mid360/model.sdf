@@ -21,6 +21,9 @@
                     <length>0.04</length>
                 </cylinder>
             </geometry>
+            <material>
+                <diffuse>0.1 0.3 0.8 1</diffuse>
+            </material>
         </visual>
 
         <collision name="collision">
@@ -41,13 +44,13 @@
             <ray>
                 <scan>
                     <horizontal>
-                        <samples>1000</samples>
+                        <samples>360</samples>
                         <resolution>1</resolution>
                         <min_angle>-3.141592653589793</min_angle>
                         <max_angle>3.141592653589793</max_angle>
                     </horizontal>
                     <vertical>
-                        <samples>20</samples>
+                        <samples>70</samples>
                         <resolution>1</resolution>
                         <min_angle>-0.12217304763960307</min_angle>
                         <max_angle>0.9075712110370514</max_angle>

@@ -25,17 +25,17 @@ components:
         host: localhost
         port: "1509"
 
-    # pom_mocap:
-    #     type: pom
-    #     meas:
-    #         -
-    #             name: mocap
-    #             port: mocap/bodies/TX
-    #         -
-    #             name: imu
-    #             port: rotorcraft/imu
+    pom:
+        type: pom
+        meas:
+            -
+                name: mocap
+                port: mocap/bodies/TX
+            -
+                name: imu
+                port: rotorcraft/imu
 
-    pom_mocap:
+    pom_lidar:
         type: pom
         meas:
             -
@@ -74,12 +74,13 @@ components:
 
 external_publishers:
     lidar:
-        target: pom_mocap
+        target: pom_lidar
         publisher: measure
         port: ros2/lio
 
 sidecars:
     lio_relay: python3 scripts/lio_relay.py tilthex_simu
+    rviz_bridge: python3 scripts/rviz_bridge.py tilthex_simu 20
 
 ros2:
     enabled: true

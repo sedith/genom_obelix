@@ -4,8 +4,18 @@ import signal
 import socket
 import subprocess
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
+
+@contextmanager
+def ignore_sigint():
+    old_handler = signal.getsignal(signal.SIGINT)
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    try:
+        yield
+    finally:
+        signal.signal(signal.SIGINT, old_handler)
 
 # SSH_OPTS = [
 #     '-o', 'ConnectTimeout=5',
@@ -42,45 +52,52 @@ class LocalRunner:
         self.setup_cmd = [f'source {shlex.quote(str(Path(os.path.expandvars(os.path.expanduser(s)))))}' for s in setup]
         self.processes = {}
 
-    def _wrap_cmd(self, cmd: str) -> str:
-        return ' && '.join(self.setup_cmd + [cmd])
+    def _wrap_cmds(self, cmds: list[str]) -> str:
+        return ' && '.join(self.setup_cmd + cmds)
 
-    def run(self, cmd: str, timeout: float | None = None, check: bool = True, wait: float = 0.0):
-        subprocess.run(['bash', '-lc', self._wrap_cmd(cmd)], cwd=self.ws, timeout=timeout, check=check)
+    def run(self, cmd: str | list[str], timeout: float | None = None, check: bool = True, wait: float = 0.0):
+        cmds = [cmd] if type(cmd) != list else cmd
+        subprocess.run(['bash', '-lc', self._wrap_cmds(cmds)], cwd=self.ws, timeout=timeout, check=check)
         if wait:
             time.sleep(wait)
 
-    def start(self, name: str, cmd: str, wait: float = 0.0) -> None:
+    def start(self, name: str, cmd: str | list[str], wait: float = 0.0) -> None:
         if name in self.processes:
             raise RuntimeError(f'Process "{name}" is already running')
-            
-        self.processes[name] = subprocess.Popen(['bash', '-lc', self._wrap_cmd(cmd)], cwd=self.ws, env=None, start_new_session=True)
+        cmds = [cmd] if type(cmd) != list else cmd
+        self.processes[name] = subprocess.Popen(['bash', '-lc', self._wrap_cmds(cmds)], cwd=self.ws, env=None, start_new_session=True)
         if wait:
             time.sleep(wait)
 
     def stop(self, name: str, timeout: float = 1.0) -> None:
-        proc = self.processes.pop(name, None)
-        if proc is not None and proc.poll() is None:
-            try:
-                os.killpg(proc.pid, signal.SIGTERM)
-                proc.wait(timeout=timeout)
-            except subprocess.TimeoutExpired:
-                os.killpg(proc.pid, signal.SIGKILL)
-                proc.wait()
+        with ignore_sigint():
+            proc = self.processes.get(name, None)
+            if proc is not None and proc.poll() is None:
+                try:
+                    os.killpg(proc.pid, signal.SIGTERM)
+                    proc.wait(timeout=timeout)
+                except subprocess.TimeoutExpired:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                    proc.wait()
+                self.processes.pop(name, None)
 
     def kill(self, name: str) -> None:
-        proc = self.processes.pop(name, None)
-        if proc is not None and proc.poll() is None:
-            os.killpg(proc.pid, signal.SIGKILL)
-            proc.wait()
+        with ignore_sigint():
+            proc = self.processes.get(name, None)
+            if proc is not None and proc.poll() is None:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait()
+                self.processes.pop(name, None)
 
     def stop_all(self, timeout: float = 1.0) -> None:
-        for name in reversed(list(self.processes.keys())):
-            self.stop(name, timeout=timeout)
+        with ignore_sigint():
+            for name in reversed(list(self.processes.keys())):
+                self.stop(name, timeout=timeout)
 
     def kill_all(self) -> None:
-        for name in reversed(list(self.processes.keys())):
-            self.kill(name)
+        with ignore_sigint():
+            for name in reversed(list(self.processes.keys())):
+                self.kill(name)
 
     def hang(self, sleep_period=1.0) -> None:
         while True:

@@ -1,130 +1,55 @@
-
+#!/usr/bin/env python3
 import sys
-import numpy as np
+import time
 import rclpy
 from rclpy.node import Node
+from rclpy.executors import ExternalShutdownException
 from nav_msgs.msg import Odometry
-from genomstack import RobotIO, Config
-from genomstack.utils import quat2euler, quat2rot
+from genomstack import RobotIO
+from genomstack.rosutils.convert import odom_to_pose_estimator, Cov
 
 
-def jacobian_euler2quat(roll, pitch, yaw):
+class LioRelay(Node):
+    def __init__(self, config_arg: str):
+        super().__init__('lio_relay')
 
-    cr = np.cos(roll * 0.5)
-    sr = np.sin(roll * 0.5)
-    cp = np.cos(pitch * 0.5)
-    sp = np.sin(pitch * 0.5)
-    cy = np.cos(yaw * 0.5)
-    sy = np.sin(yaw * 0.5)
+        self.io = RobotIO(config_arg, silent=True)
 
-    J = np.zeros((4, 3))
+        self.topic = '/rko_lio/odometry'
+        self.publisher_name = 'lidar'
+        self.repub_vel = True
+        self.printed = False
+        self.cov = Cov().from_stds(std_p=0.001, std_eul=0.1, std_v=0.1, std_w=0.1)
 
-    ## derivatives wrt roll
-    J[0, 0] = 0.5 * (-sr * cp * cy + cr * sp * sy)
-    J[1, 0] = 0.5 * ( cr * cp * cy + sr * sp * sy)
-    J[2, 0] = 0.5 * (-sr * sp * cy + cr * cp * sy)
-    J[3, 0] = 0.5 * (-sr * cp * sy - cr * sp * cy)
+        self.create_subscription(Odometry, self.topic, self.callback, 10)
 
-    ## derivatives wrt pitch
-    J[0, 1] = 0.5 * (-cr * sp * cy + sr * cp * sy)
-    J[1, 1] = 0.5 * (-sr * sp * cy - cr * cp * sy)
-    J[2, 1] = 0.5 * ( cr * cp * cy - sr * sp * sy)
-    J[3, 1] = 0.5 * (-cr * sp * sy - sr * cp * cy)
-
-    ## derivatives wrt yaw
-    J[0, 2] = 0.5 * (-cr * cp * sy + sr * sp * cy)
-    J[1, 2] = 0.5 * (-sr * cp * sy - cr * sp * cy)
-    J[2, 2] = 0.5 * (-cr * sp * sy + sr * cp * cy)
-    J[3, 2] = 0.5 * ( cr * cp * cy + sr * sp * sy)
-
-    return J
-
-
-def odom_to_pom_measure(msg: Odometry, cov: dict, repub_vel: bool=False) -> dict:
-    p = [msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z]
-    q = [msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z]
-    v_b = [msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z]
-    w_b = [msg.twist.twist.angular.x, msg.twist.twist.angular.y, msg.twist.twist.angular.z]
-
-    ## twist in world frame
-    r_wb = quat2rot(q)
-    v_w = list(r_wb @ v_b)
-    w_w = list(r_wb @ w_b)
-
-    ## covariance
-    J = jacobian_euler2quat(*quat2euler(q))
-    cov_q = J @ cov['eul'] @ J.T
-
-    return {
-        'measure': {
-            'ts': {'sec': 0, 'nsec': 0},
-            'intrinsic': 0,
-            'pos': {'x': p[0], 'y': p[1], 'z': p[2]},
-            'att': {'qw': q[0], 'qx': q[1], 'qy': q[2], 'qz': q[3]},
-            'vel': {'vx': v_w[0], 'vy': v_w[1], 'vz': v_w[2]} if repub_vel else None,
-            'avel': {'wx': w_w[0], 'wy': w_w[1], 'wz': w_w[2]} if repub_vel else None,
-            'acc': None,
-            'aacc': None,
-            'pos_cov': {'cov': cov['p']},
-            'att_cov': {'cov': list(cov_q[np.tril_indices(4)])},
-            'att_pos_cov': {'cov': [0] * 12},
-            'vel_cov': {'cov': cov['v']} if repub_vel else None,
-            'avel_cov': {'cov': cov['w']} if repub_vel else None,
-            'acc_cov': None,
-            'aacc_cov': None,
-        }
-    }
+    def callback(self, msg: Odometry):
+        if not self.printed:
+            self.printed = True
+            p = msg.pose.pose.position
+            self.get_logger().info(f'first pose retrieved: {p.x:.3f}, {p.y:.3f}, {p.z:.3f}')
+        ts = divmod(time.time_ns(), 1_000_000_000)
+        data = odom_to_pose_estimator(msg, ts=ts, cov=self.cov, repub_vel=self.repub_vel)
+        self.io.publish(self.publisher_name, data)
 
 
 def main():
     if len(sys.argv) != 2:
         print('usage: python3 ros2/lio_relay.py <config name>.yaml')
         return 1
-
     config_arg = sys.argv[1]
-    io = RobotIO(config_arg)
-
-    topic = '/rko_lio/odometry'
-    publisher_name = 'lidar'
-    std_p = 0.001
-    std_eul = 0.1
-    std_v = 0.1
-    std_w = 0.1
-    repub_vel = True
-
-    cov = {}
-    cov['p'] = list((np.eye(3) * std_p ** 2)[np.tril_indices(3)])
-    cov['v'] = list((np.eye(3) * std_v ** 2)[np.tril_indices(3)])
-    cov['w'] = list((np.eye(3) * std_w ** 2)[np.tril_indices(3)])
-    cov['eul'] = np.eye(3) * std_eul ** 2
 
     rclpy.init()
-    node = Node('lio_relay')
-
-    global printed
-    printed = False
-
-    def callback(msg):
-        global printed
-        if not printed:
-            printed = True
-            print(f'first pose retrieved, position: {msg.pose.pose.position.x:.3f}, {msg.pose.pose.position.y:.3f}, {msg.pose.pose.position.z:.3f}')
-        io.publish(publisher_name, odom_to_pom_measure(msg, cov, repub_vel))
-
-    node.create_subscription(
-        Odometry,
-        topic,
-        callback,
-        10,
-    )
+    node = LioRelay(config_arg)
 
     try:
         rclpy.spin(node)
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, ExternalShutdownException):
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+
+    return 0
 
 
 if __name__ == '__main__':

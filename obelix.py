@@ -3,24 +3,38 @@ from genomstack.utils import quat2euler, quat2yaw
 import time
 
 
-io = RobotIO('tilthex_simu')
-mission = Mission(io)
+def main():
+    if len(sys.argv) != 2:
+        print('usage: python3 launch_ros2.py <config name>.yaml')
+        return 1
+    config_arg = sys.argv[1]
 
-io.setup()
+    io = RobotIO(config_arg)
+    mission = Mission(io)
 
-p_dict = io.read('pom_mocap', 'frame/robot')
-print(p_dict['pos'])
+    io.setup()
+
+    p_dict = io.read('pom', 'frame/robot')
+    print(p_dict['frame']['pos'])
 
 
-time.sleep(3)
-mission.start_logs()
+    time.sleep(3)
+    mission.start_logs()
 
-mission.spin()
-mission.start(z_start=0.05, prompt=True)
+    mission.spin()
+    mission.start(z_start=0.15, prompt=True)
 
-mission.take_off(0.15, prompt=True)
+    mission.take_off(1, prompt=True)
 
-mission.goto(-2, 0, 0.5, 1.5, prompt=True)
+    mission.goto(-1, -1, 2, 0.00, prompt=True)
+    mission.goto( 1, -1, 3, 1.57, prompt=True)
+    mission.goto( 1,  1, 1, 3, prompt=True)
+    mission.goto(-1,  1, 4, -1, prompt=True)
+    mission.goto(0, 0, 2, 0, prompt=True)
 
-mission.land(z=0.2, prompt=True)
-mission.stop(prompt=True)
+    mission.land(z=0.2, prompt=True)
+    mission.stop(prompt=True)
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -18,15 +18,15 @@
         max_iterations: 100
 
         max_correspondance_distance: 0.5
-        max_expected_jerk: 10.0
+        max_expected_jerk: 30.0
         max_num_threads: 0
         max_points_per_voxel: 20
-        max_range: 25.0
-        min_range: 1.2
+        max_range: 15.0
+        min_range: 0.5
         min_beta: 80.0
         voxel_size: 0.5
 
-        initialization_phase: true
+        initialization_phase: false
         lidar_timestamps:
             multiplier_to_seconds: 0.0
             force_absolute: false
