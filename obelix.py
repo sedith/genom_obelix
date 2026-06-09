@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
+import sys
+import time
 from genomstack import RobotIO, Mission
 from genomstack.utils import quat2euler, quat2yaw
-import time
 
 
 def main():
@@ -10,15 +12,9 @@ def main():
     config_arg = sys.argv[1]
 
     io = RobotIO(config_arg)
-    mission = Mission(io)
-
     io.setup()
 
-    p_dict = io.read('pom', 'frame/robot')
-    print(p_dict['frame']['pos'])
-
-
-    time.sleep(3)
+    mission = Mission(io, relative=True)
     mission.start_logs()
 
     mission.spin()

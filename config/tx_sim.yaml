@@ -9,10 +9,14 @@ mass: 2.765
 geom:
     rotors: 6
     armlen: 0.39
-    cf: 12.5e-4
-    ct: 2.5e-5
+    cf: 11.4e-4
+    ct: 2.4e-5
     rx: -20
     rz: -1
+
+gz:
+    world: tilthex.world
+    options: -s -r
 
 components:
     rotorcraft:
@@ -79,8 +83,9 @@ external_publishers:
         port: ros2/lio
 
 sidecars:
-    lio_relay: python3 scripts/lio_relay.py tilthex_simu
-    rviz_bridge: python3 scripts/rviz_bridge.py tilthex_simu 20
+    lio_relay: python3 scripts/lio_relay.py tx_sim
+    rviz_bridge: python3 scripts/rviz_bridge.py tx_sim 20
+    rviz: rviz2 -d ros2/config/rviz_livox.rviz > /dev/null 2>&1
 
 ros2:
     enabled: true

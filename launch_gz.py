@@ -11,21 +11,10 @@ def main():
     
     cfg = Config(config_arg)
 
-    if not cfg.ros2.enabled:
-        print('ros2 disabled')
-        return 0
-
-    runner = LocalRunner(workspace=str(cfg.root), setup=cfg.setup)
+    runner = LocalRunner(workspace=str(cfg.root / 'gz'), setup=cfg.setup)
     try:
-        for launchfile in cfg.ros2.launchfiles:
-            cmds = [
-                'export ROS_LOCALHOST_ONLY=0',
-                f'export ROS_DOMAIN_ID={cfg.ros2.domain_id}',
-                f'python3 ros2/{launchfile} {cfg.root}/ros2/config/'
-            ]
-            runner.start('ros2', cmds)
+        runner.start('gz', [f'gz sim {cfg.gz.options}  {cfg.gz.world}'])
         runner.hang()
-
     except KeyboardInterrupt:
         print('stopping')
         runner.stop_all()

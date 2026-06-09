@@ -1,4 +1,6 @@
-from genomstack import is_localhost, LocalRunner, Config
+#!/usr/bin/env python3
+import sys
+from genomstack import LocalRunner, Config
 
 
 def main():

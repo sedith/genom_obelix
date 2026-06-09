@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 from launch import LaunchDescription, LaunchService
 from launch.actions import TimerAction, DeclareLaunchArgument

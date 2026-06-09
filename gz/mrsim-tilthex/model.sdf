@@ -212,8 +212,8 @@
         <link>base</link>
         <rotors>
         <noise>0.03</noise>
-            <cf>12.5e-4</cf>
-            <ct>2.5e-5</ct>
+            <cf>11.4e-4</cf>
+            <ct>2.4e-5</ct>
             <rotor><joint spin="cw">rotor_1_joint</joint></rotor>
             <rotor><joint spin="ccw">rotor_2_joint</joint></rotor>
             <rotor><joint spin="cw">rotor_3_joint</joint></rotor>
