@@ -1,0 +1,28 @@
+{
+  "lidar_intrinsics": {
+    "lidar_to_sensor_transform": [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ]
+  },
+  "lidar_data_format": {
+    "pixels_per_column": 64,
+    "columns_per_frame": 512,
+    "pixel_shift_by_row": [
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0
+    ]
+  },
+  "beam_intrinsics": {
+    "beam_altitude_angles": [30.0, -30.0],
+    "lidar_origin_to_beam_origin_mm": 0.0
+  }
+}

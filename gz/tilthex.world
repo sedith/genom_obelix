@@ -253,7 +253,7 @@
     </model>
 
     <model name="TX">
-        <pose>1 1 0.2 0 0 2</pose>
+        <pose>0 0 0.2 0 0 0</pose>
         <include>
             <uri>model://mrsim-tilthex</uri>
             <name>tx</name>

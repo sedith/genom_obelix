@@ -85,7 +85,7 @@ class Mission:
             z,
         ])
 
-        return tuple(p) + (self.yaw0 + yaw,)
+        return (*p, self.yaw0 + yaw)
 
     ## mission helpers
     def spin(self) -> None:

@@ -1,8 +1,27 @@
 #!/usr/bin/env python3
 import sys
 import time
+import numpy as np
 from genomstack import RobotIO, Mission
 from genomstack.utils import quat2euler, quat2yaw
+
+
+p_ee_b = np.array([0.5, 0.0, -0.1])
+yaw_ee_b = 0.0
+
+def ee_to_body(x, y, z, yaw):
+    yaw_body = yaw - yaw_ee_b
+
+    c = np.cos(yaw_body)
+    s = np.sin(yaw_body)
+
+    p_body = np.array([x, y, z]) - np.array([
+        c * p_ee_b[0] - s * p_ee_b[1],
+        s * p_ee_b[0] + c * p_ee_b[1],
+        p_ee_b[2],
+    ])
+
+    return (*p_body, yaw_body)
 
 
 def main():
@@ -22,12 +41,9 @@ def main():
 
     mission.take_off(1, prompt=True)
 
-    mission.goto(-1, -1, 2, 0.00, prompt=True)
-    mission.goto( 1, -1, 3, 1.57, prompt=True)
-    mission.goto( 1,  1, 1, 3, prompt=True)
-    mission.goto(-1,  1, 4, -1, prompt=True)
-    mission.goto(0, 0, 2, 0, prompt=True)
+    mission.goto(*ee_to_body(3,3,2,1), prompt=True)
 
+    mission.goto(0, 0, 1, 0, prompt=True)
     mission.land(z=0.2, prompt=True)
     mission.stop(prompt=True)
 

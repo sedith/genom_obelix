@@ -15,7 +15,8 @@ class RvizBridge(Node):
 
         self.io = RobotIO(config_arg, silent=True)
 
-        self.odom_pub = self.create_publisher(Odometry, '/genom/pom/odometry', 10)
+        self.pom_pub = self.create_publisher(Odometry, '/genom/pom/odometry', 10)
+        self.mocap_pub = self.create_publisher(Odometry, '/genom/pom_mocap/odometry', 10)
         self.refpoint_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
 
         self.timer = self.create_timer(1.0 / rate_hz, self.update)
@@ -24,11 +25,20 @@ class RvizBridge(Node):
         try:
             genom_data = self.io.read('pom', 'frame/robot')['frame']
             ros_data = pose_estimator_to_odometry(genom_data, frame_id='map', child_frame_id='body')
-            self.odom_pub.publish(ros_data)
+            self.pom_pub.publish(ros_data)
         except KeyError:
             pass
         except Exception as e:
             self.get_logger().warn(f'failed to publish pom state: {e}')
+
+        try:
+            genom_data = self.io.read('pom_mocap', 'frame/robot')['frame']
+            ros_data = pose_estimator_to_odometry(genom_data, frame_id='map', child_frame_id='body')
+            self.mocap_pub.publish(ros_data)
+        except KeyError:
+            pass
+        except Exception as e:
+            self.get_logger().warn(f'failed to publish pom_mocap state: {e}')
         
         try:
             genom_data = self.io.read('maneuver', 'desired')['desired']
@@ -41,7 +51,7 @@ class RvizBridge(Node):
 
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) not in [2,3]:
         print('usage: python3 ros2/rviz_bridge.py <config name>.yaml [rate_hz]')
         return 1
     config_arg = sys.argv[1]

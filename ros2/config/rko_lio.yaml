@@ -7,7 +7,7 @@
         lidar_frame: livox_lidar
         lidar_topic: /livox/lidar
 
-        base_frame: body_rko
+        base_frame: body
         odom_frame: map
         odom_topic: /rko_lio/odometry
         map_topic: /rko_lio/local_map

@@ -29,7 +29,7 @@ components:
         host: localhost
         port: "1509"
 
-    pom:
+    pom_mocap:
         type: pom
         meas:
             -
@@ -39,7 +39,7 @@ components:
                 name: imu
                 port: rotorcraft/imu
 
-    pom_lidar:
+    pom:
         type: pom
         meas:
             -
@@ -78,12 +78,12 @@ components:
 
 external_publishers:
     lidar:
-        target: pom_lidar
+        target: pom
         publisher: measure
         port: ros2/lio
 
 sidecars:
-    lio_relay: python3 scripts/lio_relay.py tx_sim
+    lio_relay: python3 scripts/lio_relay.py tx_sim /mimosa/odometry
     rviz_bridge: python3 scripts/rviz_bridge.py tx_sim 20
     rviz: rviz2 -d ros2/config/rviz_livox.rviz > /dev/null 2>&1
 
@@ -91,7 +91,8 @@ ros2:
     enabled: true
     domain_id: 42
     launchfiles:
-        - launch_lio_gz.py
+        # - launch_rko_gz.py
+        - launch_mimosa_gz.py
 #     bag:
 #       - /rko_lio/odometry
 #       - /tf
