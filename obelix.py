@@ -6,8 +6,8 @@ from genomstack import RobotIO, Mission
 from genomstack.utils import quat2euler, quat2yaw
 
 
-p_ee_b = np.array([0.5, 0.0, -0.1])
-yaw_ee_b = 0.0
+p_ee_b = np.array([0.433, 0.25, 0.0])
+yaw_ee_b = np.pi/6
 
 def ee_to_body(x, y, z, yaw):
     yaw_body = yaw - yaw_ee_b
@@ -41,7 +41,7 @@ def main():
 
     mission.take_off(1, prompt=True)
 
-    mission.goto(*ee_to_body(3,3,2,1), prompt=True)
+    mission.goto(*ee_to_body(3,3,2,np.pi), prompt=True)
 
     mission.goto(0, 0, 1, 0, prompt=True)
     mission.land(z=0.2, prompt=True)

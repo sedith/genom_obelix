@@ -2,6 +2,7 @@
 import sys
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import numpy as np
 import rclpy
 from rclpy.node import Node
 from rclpy.executors import ExternalShutdownException
@@ -10,37 +11,74 @@ from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import Marker, MarkerArray
 from genomstack import RobotIO
 from genomstack.rosutils.convert import pose_estimator_to_odometry, rigid_body_to_pose_stamped
-from genomstack.utils import euler2quat
+from genomstack.utils import euler2quat, euler2rot, rot2euler
 
 
-def parse_sdf_visual_markers(sdf_file, frame_id='body'):
+def parse_pose(elem):
+    if elem is None or elem.text is None:
+        return np.zeros(3), np.eye(3)
+    x, y, z, r, p, yaw = map(float, elem.text.split())
+    return np.array([x, y, z]), euler2rot([r, p, yaw])
+
+
+def compose_pose(parent, child):
+    parent_xyz, parent_rot = parent
+    child_xyz, child_rot = child
+    return parent_xyz + parent_rot @ child_xyz, parent_rot @ child_rot
+
+
+def model_sdf_path(world_file, uri):
+    if not uri.startswith('model://'):
+        return None
+    return world_file.parent / uri.removeprefix('model://') / 'model.sdf'
+
+
+def parse_sdf_visual_markers(world_file, model_name, frame_id='body'):
+    world_file = Path(world_file)
+    world_root = ET.parse(world_file).getroot()
+    model = world_root.find(f'.//world/model[@name="{model_name}"]')
+    if model is None:
+        for candidate in world_root.findall('.//world/model'):
+            for include in candidate.findall('include'):
+                uri = include.findtext('uri', '')
+                name = include.findtext('name', '')
+                if uri == f'model://{model_name}' or name == model_name:
+                    model = candidate
+                    break
+            if model is not None:
+                break
+    if model is None:
+        return []
+
     markers = []
-    root = ET.parse(sdf_file).getroot()
 
-    for i, visual in enumerate(root.findall('.//visual')):
+    def add_visuals_from_model(sdf_file, base_pose):
+        root = ET.parse(sdf_file).getroot()
+
+        for link in root.findall('.//model/link'):
+            link_pose = compose_pose(base_pose, parse_pose(link.find('pose')))
+            for visual in link.findall('visual'):
+                marker = marker_from_visual(visual, link_pose, len(markers), frame_id)
+                if marker is not None:
+                    markers.append(marker)
+
+        for include in root.findall('.//model/include'):
+            uri = include.findtext('uri', '')
+            include_sdf = model_sdf_path(world_file, uri)
+            if include_sdf is not None and include_sdf.exists():
+                add_visuals_from_model(include_sdf, compose_pose(base_pose, parse_pose(include.find('pose'))))
+
+    def marker_from_visual(visual, base_pose, marker_id, frame_id):
+        geom = visual.find('geometry')
+        if geom is None:
+            return None
+
         marker = Marker()
         marker.header.frame_id = frame_id
         marker.ns = 'robot_model'
-        marker.id = i
+        marker.id = marker_id
         marker.action = Marker.ADD
 
-        marker.pose.orientation.w = 1.0
-
-        pose = visual.find('pose')
-        if pose is not None:
-            x, y, z, r, p, yaw = map(float, pose.text.split())
-            marker.pose.position.x = x
-            marker.pose.position.y = y
-            marker.pose.position.z = z
-            q = euler2quat([r, p, yaw])
-            marker.pose.orientation.w = q[0]
-            marker.pose.orientation.x = q[1]
-            marker.pose.orientation.y = q[2]
-            marker.pose.orientation.z = q[3]
-
-        geom = visual.find('geometry')
-        if geom is None:
-            continue
         if geom.find('cylinder') is not None:
             cyl = geom.find('cylinder')
             radius = float(cyl.find('radius').text)
@@ -67,7 +105,17 @@ def parse_sdf_visual_markers(sdf_file, frame_id='body'):
             marker.scale.y = 2 * radius
             marker.scale.z = 2 * radius
         else:
-            continue
+            return None
+
+        xyz, rot = compose_pose(base_pose, parse_pose(visual.find('pose')))
+        marker.pose.position.x = float(xyz[0])
+        marker.pose.position.y = float(xyz[1])
+        marker.pose.position.z = float(xyz[2])
+        q = euler2quat(rot2euler(rot))
+        marker.pose.orientation.w = q[0]
+        marker.pose.orientation.x = q[1]
+        marker.pose.orientation.y = q[2]
+        marker.pose.orientation.z = q[3]
 
         diffuse = visual.find('material/diffuse')
         if diffuse is not None:
@@ -82,7 +130,13 @@ def parse_sdf_visual_markers(sdf_file, frame_id='body'):
             marker.color.b = 0.5
             marker.color.a = 1.0
 
-        markers.append(marker)
+        return marker
+
+    for include in model.findall('include'):
+        uri = include.findtext('uri', '')
+        sdf_file = model_sdf_path(world_file, uri)
+        if sdf_file is not None and sdf_file.exists():
+            add_visuals_from_model(sdf_file, parse_pose(include.find('pose')))
 
     return markers
 
@@ -98,8 +152,8 @@ class RvizBridge(Node):
         self.refpoint_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
 
         self.model_pub = self.create_publisher(MarkerArray, '/genom/robot_model', 10)
-        sdf_file = Path('gz/mrsim-tilthex/model.sdf')
-        self.model_markers = parse_sdf_visual_markers(sdf_file, frame_id='body')
+        world_file = self.io.cfg.root / 'gz' / self.io.cfg.gz.world
+        self.model_markers = parse_sdf_visual_markers(world_file, 'TX', frame_id='body')
 
         self.timer = self.create_timer(1.0 / rate_hz, self.update)
 
