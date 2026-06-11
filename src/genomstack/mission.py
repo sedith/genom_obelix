@@ -90,6 +90,7 @@ class Mission:
     ## mission helpers
     def spin(self) -> None:
         print(f'start spinning and logging')
+        self.io.components['phynt'].call('set_wo_zero', 1)
         self.start_logs()
         self.io.components['rotorcraft'].call('start')
 
@@ -99,16 +100,13 @@ class Mission:
         if prompt: input('press enter ...')
         self.io.components['rotorcraft'].call('servo', ack=True)
         self.io.components['maneuver'].call('set_current_state')
+        if 'phynt' in self.io.components:
+            self.io.components['phynt'].call('set_current_position')
+            self.io.components['phynt'].call('servo', ack=True)
         self.io.components['maneuver'].call('take_off', z_start, ramp_duration, ack=True)
         self.io.components['uavpos'].call('servo', ack=True)
         self.io.components['uavatt'].call('servo', ack=True)
-
-    def take_off(self, z=0.6, duration=0, prompt=False) -> None:
-        _, _, z, _ = self.transform_pose(0, 0, z, 0)
-        print(f'take_off: {z:.3f} [m] -- duration: {duration} [s]')
-        if prompt: input('press enter ...')
-        self.io.components['maneuver'].call('take_off', z, duration, ack=True)
-
+        
     def goto(self, x, y, z, yaw, duration=0, prompt=False) -> None:
         x, y, z, yaw = self.transform_pose(x, y, z, yaw)
         print(f'goto: {x:.3f} {y:.3f} {z:.3f} [m] -- {yaw:.3f} [rad] -- duration {duration}s')

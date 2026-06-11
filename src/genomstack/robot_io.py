@@ -26,6 +26,7 @@ class RobotIO:
         'uavpos': UavPos,
         'uavatt': UavAtt,
         'maneuver': Maneuver,
+        'phynt': Phynt,
     }
 
     def __init__(self, cfg: str, silent: bool = False):

@@ -37,9 +37,9 @@ def main():
     mission.start_logs()
 
     mission.spin()
-    mission.start(z_start=0.15, prompt=True)
+    mission.start(z_start=0.15, ramp_duration=5, prompt=True)
 
-    mission.take_off(1, prompt=True)
+    mission.goto(0.25, 0, 1, 0, prompt=True)
 
     mission.goto(*ee_to_body(3,3,2,np.pi), prompt=True)
 

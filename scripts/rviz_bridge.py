@@ -149,7 +149,8 @@ class RvizBridge(Node):
 
         self.pom_pub = self.create_publisher(Odometry, '/genom/pom/odometry', 10)
         self.mocap_pub = self.create_publisher(Odometry, '/genom/pom_mocap/odometry', 10)
-        self.refpoint_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
+        self.ref_man_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
+        self.ref_phynt_pub = self.create_publisher(PoseStamped, '/genom/phynt/desired', 10)
 
         self.model_pub = self.create_publisher(MarkerArray, '/genom/robot_model', 10)
         world_file = self.io.cfg.root / 'gz' / self.io.cfg.gz.world
@@ -184,7 +185,16 @@ class RvizBridge(Node):
         try:
             genom_data = self.io.read('maneuver', 'desired')['desired']
             ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
-            self.refpoint_pub.publish(ros_data)
+            self.ref_man_pub.publish(ros_data)
+        except KeyError:
+            pass
+        except Exception as e:
+            self.get_logger().warn(f'failed to publish maneuver ref: {e}')
+
+        try:
+            genom_data = self.io.read('phynt', 'desired')['desired']
+            ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
+            self.ref_phynt_pub.publish(ros_data)
         except KeyError:
             pass
         except Exception as e:

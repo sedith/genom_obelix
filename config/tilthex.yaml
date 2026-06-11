@@ -2,7 +2,8 @@ host: porche
 plugin_path: /home/onepiece/devel/lib/genom/pocolibs/plugins
 workspace: /home/onepiece/mjacquet/genom_obelix/
 
-mass: 3.22
+inertial:
+    mass: 3.22
 geom:
     rotors: 6
     armlen: 0.39

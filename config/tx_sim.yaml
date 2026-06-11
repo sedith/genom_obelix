@@ -5,7 +5,12 @@ setup:
     - /opt/ros/humble/setup.bash
     - ~/work/ws_livox/ros2/install/setup.bash
     
-mass: 2.765
+inertial:
+    mass: 2.765
+    Jxx: 0.011549
+    Jyy: 0.011368
+    Jzz: 0.019444
+
 geom:
     rotors: 6
     armlen: 0.39
@@ -52,6 +57,7 @@ components:
 
     uavpos:
         type: uavpos
+        reference: phynt/desired
         xyradius: 1
         gain:
             Kpxy: 10
@@ -75,6 +81,16 @@ components:
         wmax: 3
         amax: 4
         dwmax: 4
+
+    phynt:
+        type: phynt
+        wo:
+            K: [1.0, 1.0, 5.0, 2.0, 2.0, 1.0]
+            fc: [20, 20, 20, 0, 0, 0]
+            thresh: [0, 0, 0, 0, 0, 0]
+            bias: [0, 0, 0, 0, 0, 0]
+        af:
+            K: [120, 10, 120, 100, 100, 100]
 
 external_publishers:
     lidar:

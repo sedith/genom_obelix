@@ -57,6 +57,12 @@ class Config(AttrDict):
         self.config_file = config_file
         self.tmp_dir = '/tmp/genom_obelix/'
 
+        self.inertial.J = [
+            self.inertial.Jxx, 0.0, 0.0, 
+            0.0, self.inertial.Jyy, 0.0,
+            0.0, 0.0, self.inertial.Jzz
+        ]
+
         if 'rotorcraft' in self.components:
             self.components.rotorcraft.calib_file = self.root / 'calib' / self.components.rotorcraft.calib
         self.log_dir = self.root / 'logs' / f'{config_file.stem}_{time.strftime("%y%m%d_%H%M%S")}'

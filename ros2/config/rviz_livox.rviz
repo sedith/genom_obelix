@@ -132,7 +132,7 @@ Visualization Manager:
       Axes Radius: 0.05000000074505806
       Class: rviz_default_plugins/Pose
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: maneuver desired
@@ -146,6 +146,26 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /genom/maneuver/desired
+      Value: false
+    - Alpha: 1
+      Axes Length: 0.20000000298023224
+      Axes Radius: 0.05000000074505806
+      Class: rviz_default_plugins/Pose
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.30000001192092896
+      Head Radius: 0.10000000149011612
+      Name: phynt desired
+      Shaft Length: 1
+      Shaft Radius: 0.05000000074505806
+      Shape: Axes
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /genom/phynt/desired
       Value: true
     - Angle Tolerance: 0
       Class: rviz_default_plugins/Odometry
@@ -349,25 +369,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.947821617126465
+      Distance: 2.9922828674316406
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.7661557793617249
-        Y: 0.7923831343650818
-        Z: 0.888424277305603
+        X: 0.8413704037666321
+        Y: 0.12166748195886612
+        Z: 0.3304847776889801
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.590398371219635
+      Pitch: 0.050398677587509155
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.8404064178466797
+      Yaw: 3.690408229827881
     Saved: ~
 Window Geometry:
   Displays:
