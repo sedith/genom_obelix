@@ -267,6 +267,15 @@
             <parent>tx::base</parent>
             <child>livox::base</child>
         </joint>
+        <include>
+            <pose>0 0 0 0 0 0.5236</pose>
+            <uri>model://tilthex-ee</uri>
+            <name>ee</name>
+        </include>
+        <joint name="ee_joint" type="fixed">
+            <parent>tx::base</parent>
+            <child>ee::base</child>
+        </joint>
     </model>
 
     <plugin name="optitrack" filename="optitrack-gazebo-2.0.so">
