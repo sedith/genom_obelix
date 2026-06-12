@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from launch import LaunchDescription, LaunchService
-from launch.actions import TimerAction, DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.actions import TimerAction
 from launch_ros.actions import Node
 
 
@@ -26,7 +25,7 @@ def make_launch_description(config_dir):
             arguments=[
                 '--x', '0', '--y', '0', '--z', '0',
                 '--roll', '0', '--pitch', '0', '--yaw', '0',
-                '--frame-id', 'body_rko', '--child-frame-id', 'livox_lidar',
+                '--frame-id', 'body', '--child-frame-id', 'livox_lidar',
             ],
             output='screen',
         ),
@@ -48,8 +47,7 @@ def make_launch_description(config_dir):
                 output='screen',
                 emulate_tty=True,
                 parameters=[
-                    {'use_sim_time': False},
-                    config_dir + '/rko_lio.yaml',
+                    config_dir + '/rko.yaml',
                 ]
             )]
         ),

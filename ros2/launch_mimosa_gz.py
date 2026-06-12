@@ -66,6 +66,39 @@ async def run_gz_livox_for_mimosa():
 def make_launch_description(config_dir):
     return LaunchDescription([
         Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_livox_lidar_imu',
+            arguments=[
+                '--x', '0.011', '--y', '0.02329', '--z', '-0.04412',
+                '--roll', '0.0', '--pitch', '0.0', '--yaw', '0.0',
+                '--frame-id', 'livox_lidar', '--child-frame-id', 'livox_imu',
+            ],
+            output='screen',
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_gz_livox_lidar_alias',
+            arguments=[
+                '--x', '0', '--y', '0', '--z', '0',
+                '--roll', '0', '--pitch', '0', '--yaw', '0',
+                '--frame-id', 'livox_lidar', '--child-frame-id', 'TX/livox/base/livox_lidar',
+            ],
+            output='screen',
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_gz_livox_imu_alias',
+            arguments=[
+                '--x', '0', '--y', '0', '--z', '0',
+                '--roll', '0', '--pitch', '0', '--yaw', '0',
+                '--frame-id', 'livox_imu', '--child-frame-id', 'TX/livox/base/livox_imu',
+            ],
+            output='screen',
+        ),
+        Node(
             package='ros_gz_bridge',
             executable='parameter_bridge',
             name='gz_sensor_bridge',
@@ -87,13 +120,14 @@ def make_launch_description(config_dir):
                 output='screen',
                 emulate_tty=True,
                 parameters=[
-                    {'config_path': config_dir + '/mimosa_gz.yaml'},
+                    {'config_path': config_dir + '/mimosa.yaml'},
                 ],
                 remappings=[
                     ('~/imu/manager/imu_in', '/livox/imu'),
                     ('~/lidar/manager/lidar_in', '/livox/lidar_mimosa'),
-                    ('~/graph/odometry', '/mimosa/odometry'),
                     ('~/lidar/geometric/map', '/mimosa/local_map'),
+                    ('~/graph/odometry', '/mimosa/odometry'),
+                    ('~/imu/manager/odometry', '/mimosa/odometry_imufreq'),
                 ],
             )]
         ),

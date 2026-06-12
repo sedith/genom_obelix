@@ -284,7 +284,7 @@
             <name>tx</name>
         </include>
         <include>
-            <pose>0 0 0.05 0 0 0</pose>
+            <pose>0 0 0.075 0 0 0</pose>
             <uri>model://livox-mid360</uri>
             <name>livox</name>
         </include>

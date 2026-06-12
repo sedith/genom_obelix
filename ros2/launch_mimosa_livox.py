@@ -8,6 +8,17 @@ from launch_ros.actions import Node
 def make_launch_description(config_dir):
     return LaunchDescription([
         Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_lidar_livox_imu',
+            arguments=[
+                '--x', '0.011', '--y', '0.02329', '--z', '-0.04412',
+                '--roll', '0.0', '--pitch', '0.0', '--yaw', '0.0',
+                '--frame-id', 'livox_lidar', '--child-frame-id', 'livox_imu',
+            ],
+            output='screen',
+        ),
+        Node(
             package='livox_ros_driver2',
             executable='livox_ros_driver2_node',
             name='livox_lidar_publisher',
@@ -25,13 +36,14 @@ def make_launch_description(config_dir):
                 output='screen',
                 emulate_tty=True,
                 parameters=[
-                    {'config_path': config_dir + '/mimosa_livox.yaml'},
+                    {'config_path': config_dir + '/mimosa.yaml'},
                 ],
                 remappings=[
                     ('~/imu/manager/imu_in', '/livox/imu'),
-                    ('~/lidar/manager/lidar_in', '/livox/lidar'),
-                    ('~/graph/odometry', '/mimosa/odometry'),
+                    ('~/lidar/manager/lidar_in', '/livox/lidar_mimosa'),
                     ('~/lidar/geometric/map', '/mimosa/local_map'),
+                    ('~/graph/odometry', '/mimosa/odometry'),
+                    ('~/imu/manager/odometry', '/mimosa/odometry_imufreq'),
                 ],
             )]
         ),

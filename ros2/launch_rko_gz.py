@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from launch import LaunchDescription, LaunchService
-from launch.actions import TimerAction, DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.actions import TimerAction
 from launch_ros.actions import Node
 
 
@@ -15,7 +14,29 @@ def make_launch_description(config_dir):
             arguments=[
                 '--x', '0.011', '--y', '0.02329', '--z', '-0.04412',
                 '--roll', '0.0', '--pitch', '0.0', '--yaw', '0.0',
-                '--frame-id', 'TX/livox/base/livox_lidar', '--child-frame-id', 'TX/livox/base/livox_imu',
+                '--frame-id', 'livox_lidar', '--child-frame-id', 'livox_imu',
+            ],
+            output='screen',
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_gz_livox_lidar_alias',
+            arguments=[
+                '--x', '0', '--y', '0', '--z', '0',
+                '--roll', '0', '--pitch', '0', '--yaw', '0',
+                '--frame-id', 'livox_lidar', '--child-frame-id', 'TX/livox/base/livox_lidar',
+            ],
+            output='screen',
+        ),
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='tf_gz_livox_imu_alias',
+            arguments=[
+                '--x', '0', '--y', '0', '--z', '0',
+                '--roll', '0', '--pitch', '0', '--yaw', '0',
+                '--frame-id', 'livox_imu', '--child-frame-id', 'TX/livox/base/livox_imu',
             ],
             output='screen',
         ),
@@ -26,7 +47,7 @@ def make_launch_description(config_dir):
             arguments=[
                 '--x', '0', '--y', '0', '--z', '0',
                 '--roll', '0', '--pitch', '0', '--yaw', '0',
-                '--frame-id', 'body_rko', '--child-frame-id', 'TX/livox/base/livox_lidar',
+                '--frame-id', 'body', '--child-frame-id', 'livox_lidar',
             ],
             output='screen',
         ),
@@ -51,7 +72,12 @@ def make_launch_description(config_dir):
                 output='screen',
                 emulate_tty=True,
                 parameters=[
-                    config_dir + '/rko_lio_gz.yaml',
+                    config_dir + '/rko.yaml',
+                    {
+                        'use_sim_time': True,
+                        'deskew': False,
+                        'initialization_phase': False,
+                    }
                 ]
             )]
         ),

@@ -99,7 +99,7 @@ Visualization Manager:
       Max Intensity: 0
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: rko localmap
+      Name: lio localmap
       Position Transformer: XYZ
       Selectable: true
       Size (Pixels): 3
@@ -132,7 +132,7 @@ Visualization Manager:
       Axes Radius: 0.05000000074505806
       Class: rviz_default_plugins/Pose
       Color: 255; 25; 0
-      Enabled: true
+      Enabled: false
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: maneuver desired
@@ -146,7 +146,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /genom/maneuver/desired
-      Value: true
+      Value: false
     - Alpha: 1
       Axes Length: 0.20000000298023224
       Axes Radius: 0.05000000074505806
@@ -262,7 +262,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: false
+      Enabled: true
       Keep: 1
       Name: odom lio imu
       Position Tolerance: 0
@@ -282,8 +282,8 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /mimosa_node/imu/manager/odometry
-      Value: false
+        Value: /mimosa/odometry_imufreq
+      Value: true
     - Angle Tolerance: 0
       Class: rviz_default_plugins/Odometry
       Covariance:
@@ -369,25 +369,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 7.408782482147217
+      Distance: 9.968080520629883
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 2.5660650730133057
-        Y: -0.26994600892066956
-        Z: 0.7488636374473572
+        X: 3.2809557914733887
+        Y: -0.2411690056324005
+        Z: 1.2494653463363647
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6403986811637878
+      Pitch: 0.5003986358642578
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.12040901184082
+      Yaw: 4.025415420532227
     Saved: ~
 Window Geometry:
   Displays:
