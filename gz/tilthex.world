@@ -62,9 +62,9 @@
             <pose>10 0 5 0 0 1.57</pose>
             <collision name="collision">
                 <geometry>
-                <box>
-                    <size>20 0.1 10.0</size>
-                </box>
+                    <box>
+                        <size>20 0.1 10.0</size>
+                    </box>
                 </geometry>
             </collision>
             <visual name="visual">
@@ -81,12 +81,12 @@
             </visual>
         </link>
         <link name="wall_y">
-           <pose>0 10 5 0 0 0</pose>
+            <pose>0 10 5 0 0 0</pose>
             <collision name="collision">
                 <geometry>
-                <box>
-                    <size>20 0.1 10.0</size>
-                </box>
+                    <box>
+                        <size>20 0.1 10.0</size>
+                    </box>
                 </geometry>
             </collision>
             <visual name="visual">
@@ -106,9 +106,9 @@
             <pose>0 0 8 0 0 0</pose>
             <collision name="collision">
                 <geometry>
-                <box>
-                    <size>20 20 0.1</size>
-                </box>
+                    <box>
+                        <size>20 20 0.1</size>
+                    </box>
                 </geometry>
             </collision>
             <visual name="visual">
@@ -252,6 +252,31 @@
         </link>
     </model>
 
+    <model name="object">
+        <link name="base">
+                <pose>5 0 1 0 0 0</pose>
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>2 2 2</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>2 2 2</size>
+                        </box>
+                        </geometry>
+                    <material>
+                        <ambient>0.8 0.8 0.8 1</ambient>
+                        <diffuse>0.8 0.8 0.8 1</diffuse>
+                        <specular>0.8 0.8 0.8 1</specular>
+                    </material>
+                </visual>
+            </link>
+    </model>
+
     <model name="TX">
         <pose>0 0 0.2 0 0 0</pose>
         <include>
@@ -268,7 +293,7 @@
             <child>livox::base</child>
         </joint>
         <include>
-            <pose>0 0 0 0 0 0.5236</pose>
+            <pose>0.05 0 0.03 0 0 0.5236</pose>
             <uri>model://tilthex-ee</uri>
             <name>ee</name>
         </include>

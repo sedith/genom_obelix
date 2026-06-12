@@ -132,7 +132,7 @@ Visualization Manager:
       Axes Radius: 0.05000000074505806
       Class: rviz_default_plugins/Pose
       Color: 255; 25; 0
-      Enabled: false
+      Enabled: true
       Head Length: 0.30000001192092896
       Head Radius: 0.10000000149011612
       Name: maneuver desired
@@ -146,7 +146,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /genom/maneuver/desired
-      Value: false
+      Value: true
     - Alpha: 1
       Axes Length: 0.20000000298023224
       Axes Radius: 0.05000000074505806
@@ -184,7 +184,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 1
       Name: odom pom
       Position Tolerance: 0
@@ -205,7 +205,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /genom/pom/odometry
-      Value: true
+      Value: false
     - Angle Tolerance: 0
       Class: rviz_default_plugins/Odometry
       Covariance:
@@ -301,7 +301,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 1
       Name: odom pom_mocap
       Position Tolerance: 0
@@ -322,7 +322,7 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /genom/pom_mocap/odometry
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -369,25 +369,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.9922828674316406
+      Distance: 7.408782482147217
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.8413704037666321
-        Y: 0.12166748195886612
-        Z: 0.3304847776889801
+        X: 2.5660650730133057
+        Y: -0.26994600892066956
+        Z: 0.7488636374473572
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.050398677587509155
+      Pitch: 0.6403986811637878
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.690408229827881
+      Yaw: 4.12040901184082
     Saved: ~
 Window Geometry:
   Displays:
