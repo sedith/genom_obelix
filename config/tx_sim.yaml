@@ -7,9 +7,9 @@ setup:
     
 inertial:
     mass: 2.765
-    Jxx: 0.011549
-    Jyy: 0.011368
-    Jzz: 0.019444
+    Jxx: 0.0115
+    Jyy: 0.0115
+    Jzz: 0.0194
 
 geom:
     rotors: 6
@@ -58,7 +58,7 @@ components:
     uavpos:
         type: uavpos
         reference: phynt/desired
-        xyradius: 1
+        xyradius: 2
         gain:
             Kpxy: 10
             Kpz: 10
@@ -107,11 +107,10 @@ ros2:
     enabled: true
     domain_id: 42
     launchfiles:
-        # - launch_rko_gz.py
         - launch_mimosa_gz.py
-#     bag:
-#       - /rko_lio/odometry
-#       - /tf
-#       - /tf_static
-#       - /livox/lidar
-#       - /livox/imu
+    bag:
+      - /mimosa/odometry
+      - /tf
+      - /tf_static
+      - /livox/lidar
+      - /livox/imu

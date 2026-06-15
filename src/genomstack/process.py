@@ -8,6 +8,15 @@ from contextlib import contextmanager
 from pathlib import Path
 
 
+SSH_OPTS = [
+    '-o', 'ConnectTimeout=5',
+    '-o', 'ServerAliveInterval=5',
+    '-o', 'ServerAliveCountMax=3',
+    '-o', 'BatchMode=yes',
+    '-o', 'ConnectionAttempts=1',
+]
+
+
 @contextmanager
 def ignore_sigint():
     old_handler = signal.getsignal(signal.SIGINT)
@@ -17,39 +26,23 @@ def ignore_sigint():
     finally:
         signal.signal(signal.SIGINT, old_handler)
 
-# SSH_OPTS = [
-#     '-o', 'ConnectTimeout=5',
-#     '-o', 'ServerAliveInterval=5',
-#     '-o', 'ServerAliveCountMax=3',
-# ]
-
 
 ## helpers
 def is_localhost(host: str) -> bool:
     return host in ('localhost', '127.0.0.1', '::1', socket.gethostname())
 
 
-# def shell_path(path) -> str:
-#     path = str(path)
-#     if path == '~' or path.startswith('~/'):
-#         return path
-#     return shlex.quote(path)
-
-
-# def source_prefix(setup_files) -> str:
-#     if not setup_files:
-#         return ''
-
-#     return ' && '.join(
-#         f'source {shell_path(setup)}'
-#         for setup in setup_files
-#     )
+def shell_path(path, expand: bool = False) -> str:
+    path = str(path)
+    if expand:
+        path = os.path.expandvars(os.path.expanduser(path))
+    return shlex.quote(path)
 
 
 class LocalRunner:
-    def __init__(self, workspace: str ='', setup: list[str] = []):
+    def __init__(self, workspace: str = '', setup: list[str] | None = None):
         self.ws = Path(workspace).expanduser().resolve() if workspace else None
-        self.setup_cmd = [f'source {shlex.quote(str(Path(os.path.expandvars(os.path.expanduser(s)))))}' for s in setup]
+        self.setup_cmd = [f'source {shell_path(s, True)}' for s in (setup or [])]
         self.processes = {}
 
     def _wrap_cmds(self, cmds: list[str]) -> str:
@@ -65,28 +58,36 @@ class LocalRunner:
         if name in self.processes:
             raise RuntimeError(f'Process "{name}" is already running')
         cmds = [cmd] if type(cmd) != list else cmd
-        self.processes[name] = subprocess.Popen(['bash', '-lc', self._wrap_cmds(cmds)], cwd=self.ws, env=None, start_new_session=True)
+        self.processes[name] = subprocess.Popen(['bash', '-lc', self._wrap_cmds(cmds)], cwd=self.ws, env=None, stdin=subprocess.DEVNULL, start_new_session=True)
         if wait:
             time.sleep(wait)
 
     def stop(self, name: str, timeout: float = 1.0) -> None:
         with ignore_sigint():
             proc = self.processes.get(name, None)
-            if proc is not None and proc.poll() is None:
-                try:
-                    os.killpg(proc.pid, signal.SIGTERM)
-                    proc.wait(timeout=timeout)
-                except subprocess.TimeoutExpired:
-                    os.killpg(proc.pid, signal.SIGKILL)
-                    proc.wait()
+            if proc is None:
+                return
+            try:
+                if proc.poll() is None:
+                    try:
+                        os.killpg(proc.pid, signal.SIGTERM)
+                        proc.wait(timeout=timeout)
+                    except subprocess.TimeoutExpired:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                        proc.wait()
+            finally:
                 self.processes.pop(name, None)
 
     def kill(self, name: str) -> None:
         with ignore_sigint():
             proc = self.processes.get(name, None)
-            if proc is not None and proc.poll() is None:
-                os.killpg(proc.pid, signal.SIGKILL)
-                proc.wait()
+            if proc is None:
+                return
+            try:
+                if proc.poll() is None:
+                    os.killpg(proc.pid, signal.SIGKILL)
+                    proc.wait()
+            finally:
                 self.processes.pop(name, None)
 
     def stop_all(self, timeout: float = 1.0) -> None:
@@ -104,154 +105,85 @@ class LocalRunner:
             time.sleep(sleep_period)
 
 
-## mockup by chatgpt
-# class RemoteTmuxRunner:
-#     """Launches remote processes inside a tmux session.
-
-#     SSH is only used to send commands. The remote processes are owned by tmux,
-#     so they do not immediately die if the SSH connection drops.
-
-#     Requirements on the remote host:
-#       - ssh access
-#       - tmux installed
-#       - bash
-#     """
-#     def __init__(
-#         self,
-#         host: str,
-#         workspace: str,
-#         session: str = 'genom_obelix',
-#         setup=None,
-#         log_dir: str = '/tmp/genom_obelix',
-#         ssh_opts=None,
-#     ):
+class RemoteTmuxRunner:
+    def __init__(self, host: str, workspace: str = '', setup: list[str] | None = None, session: str = 'genomstack'):
+        raise(NotImplementedError)
 #         self.host = host
-#         self.workspace = workspace
+#         self.ws = workspace
 #         self.session = session
-#         self.setup = setup or []
-#         self.log_dir = log_dir
-#         self.ssh_opts = ssh_opts or SSH_OPTS
-#         self._tail_process = None
+#         self.setup_cmd = [f'source {shell_path(s)}' for s in (setup or [])]
+#         self.processes = {}
 
-#     def ssh(self, cmd: str, check: bool = True):
-#         return subprocess.run(
-#             [
-#                 'ssh',
-#                 *self.ssh_opts,
-#                 self.host,
-#                 f'bash -lc {shlex.quote(cmd)}',
-#             ],
-#             check=check,
-#         )
+#     def _ssh_cmd(self, cmd: str) -> list[str]:
+#         return ['ssh', *SSH_OPTS, self.host, f'bash -lc {shlex.quote(cmd)}']
 
-#     def ssh_popen(self, cmd: str):
-#         return subprocess.Popen([
-#             'ssh',
-#             *self.ssh_opts,
-#             self.host,
-#             f'bash -lc {shlex.quote(cmd)}',
-#         ])
+#     def _ssh(self, cmd: str, timeout: float | None = None, check: bool = True):
+#         return subprocess.run(self._ssh_cmd(cmd), timeout=timeout, check=check)
 
-#     def start_session(self):
-#         cmd = (
-#             f'mkdir -p {shell_path(self.log_dir)} && '
-#             f'tmux has-session -t {shlex.quote(self.session)} 2>/dev/null || '
-#             f'tmux new-session -d -s {shlex.quote(self.session)} -n main'
-#         )
-
-#         self.ssh(cmd)
-
-#     def wrap_cmd(self, name: str, cmd: str) -> str:
-#         parts = [
-#             f'mkdir -p {shell_path(self.log_dir)}',
-#             f'cd {shell_path(self.workspace)}',
-#         ]
-
-#         prefix = source_prefix(self.setup)
-#         if prefix:
-#             parts.append(prefix)
-
-#         process_log = f'{self.log_dir}/{name}.out'
-#         stack_log = f'{self.log_dir}/stack.out'
-
-#         parts.append(
-#             "{ "
-#             f"echo '[{name}] starting: {cmd}'; "
-#             f"{cmd}; "
-#             f"echo '[{name}] exited with code $?'; "
-#             "} "
-#             "2>&1 "
-#             f"| sed -u {shlex.quote(f's/^/[{name}] /')} "
-#             f"| tee -a {shell_path(process_log)} -a {shell_path(stack_log)}"
-#         )
-
+#     def _wrap_cmds(self, cmds: list[str]) -> str:
+#         parts = []
+#         if self.ws:
+#             parts.append(f'cd {shell_path(self.ws)}')
+#         parts += self.setup_cmd + cmds
 #         return ' && '.join(parts)
 
-#     def start(self, name: str, cmd: str, wait: float = 0.0):
-#         self.start_session()
+#     def _target(self, name: str) -> str:
+#         return shlex.quote(f'{self.session}:{name}')
 
-#         wrapped = self.wrap_cmd(name, cmd)
+#     def _ensure_session(self) -> None:
+#         session = shlex.quote(self.session)
+#         self._ssh(f'tmux has-session -t {session} 2>/dev/null || tmux new-session -d -s {session}')
 
+#     def run(self, cmd: str | list[str], timeout: float | None = None, check: bool = True, wait: float = 0.0):
+#         cmds = [cmd] if type(cmd) != list else cmd
+#         self._ssh(self._wrap_cmds(cmds), timeout=timeout, check=check)
+#         if wait:
+#             time.sleep(wait)
+
+#     def start(self, name: str, cmd: str | list[str], wait: float = 0.0) -> None:
+#         if name in self.processes:
+#             raise RuntimeError(f'Process "{name}" is already running')
+
+#         self._ensure_session()
+#         cmds = [cmd] if type(cmd) != list else cmd
+#         shell_cmd = 'bash -lc ' + shlex.quote(self._wrap_cmds(cmds))
 #         tmux_cmd = (
-#             f'tmux new-window '
-#             f'-t {shlex.quote(self.session)} '
-#             f'-n {shlex.quote(name)} '
-#             f'{shlex.quote('bash -lc ' + shlex.quote(wrapped))}'
+#             f'tmux new-window -d -t {shlex.quote(self.session)} '
+#             f'-n {shlex.quote(name)} {shlex.quote(shell_cmd)}'
 #         )
-
-#         self.ssh(tmux_cmd)
+#         self._ssh(tmux_cmd)
+#         self.processes[name] = True
 
 #         if wait:
 #             time.sleep(wait)
 
-#     def stop(self, name: str):
-#         self.ssh(
-#             f'tmux kill-window '
-#             f'-t {shlex.quote(self.session)}:{shlex.quote(name)}',
-#             check=False,
-#         )
+#     def stop(self, name: str, timeout: float = 1.0) -> None:
+#         with ignore_sigint():
+#             target = self._target(name)
+#             self._ssh(f'tmux send-keys -t {target} C-c', check=False)
+#             time.sleep(timeout)
+#             self._ssh(f'tmux kill-window -t {target}', check=False)
+#             self.processes.pop(name, None)
 
-#     def stop_all(self):
-#         self.stop_tail()
+#     def kill(self, name: str) -> None:
+#         with ignore_sigint():
+#             self._ssh(f'tmux kill-window -t {self._target(name)}', check=False)
+#             self.processes.pop(name, None)
 
-#         self.ssh(
-#             f'tmux kill-session -t {shlex.quote(self.session)}',
-#             check=False,
-#         )
+#     def stop_all(self, timeout: float = 1.0) -> None:
+#         with ignore_sigint():
+#             for name in reversed(list(self.processes.keys())):
+#                 self._ssh(f'tmux send-keys -t {self._target(name)} C-c', check=False)
+#             if self.processes and timeout:
+#                 time.sleep(timeout)
+#             self._ssh(f'tmux kill-session -t {shlex.quote(self.session)}', check=False)
+#             self.processes.clear()
 
-#     def tail_logs(self):
-#         if self._tail_process is not None and self._tail_process.poll() is None:
-#             return self._tail_process
+#     def kill_all(self) -> None:
+#         with ignore_sigint():
+#             self._ssh(f'tmux kill-session -t {shlex.quote(self.session)}', check=False)
+#             self.processes.clear()
 
-#         cmd = (
-#             f'mkdir -p {shell_path(self.log_dir)} && '
-#             f'touch {shell_path(self.log_dir)}/stack.out && '
-#             f'tail -F {shell_path(self.log_dir)}/stack.out'
-#         )
-
-#         self._tail_process = self.ssh_popen(cmd)
-#         return self._tail_process
-
-#     def stop_tail(self):
-#         if self._tail_process is None:
-#             return
-
-#         if self._tail_process.poll() is None:
-#             self._tail_process.terminate()
-#             try:
-#                 self._tail_process.wait(timeout=2.0)
-#             except subprocess.TimeoutExpired:
-#                 self._tail_process.kill()
-#                 self._tail_process.wait()
-
-#         self._tail_process = None
-
-#     def wait(self, follow_logs: bool = True):
-#         if follow_logs:
-#             self.tail_logs()
-
-#         try:
-#             while True:
-#                 time.sleep(1.0)
-#         except KeyboardInterrupt:
-#             self.stop_all()
+#     def hang(self, sleep_period=1.0) -> None:
+#         while True:
+#             time.sleep(sleep_period)

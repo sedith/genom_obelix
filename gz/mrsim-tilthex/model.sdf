@@ -6,7 +6,7 @@
             <mass>2.5</mass>
             <inertia>
                 <ixx>0.0115</ixx><ixy>0</ixy><ixz>0</ixz>
-                <iyy>0.0114</iyy><iyz>0</iyz>
+                <iyy>0.0115</iyy><iyz>0</iyz>
                 <izz>0.0194</izz>
             </inertia>
         </inertial>

@@ -13,7 +13,7 @@ def main():
 
     runner = LocalRunner(workspace=str(cfg.root / 'gz'), setup=cfg.setup)
     try:
-        runner.start('gz', [f'gz sim {cfg.gz.options}  {cfg.gz.world}'])
+        runner.start('gz', [f'gz sim {cfg.gz.options} {cfg.gz.world}'])
         runner.hang()
     except KeyboardInterrupt:
         print('stopping')

@@ -1,13 +1,21 @@
 host: porche
 plugin_path: /home/onepiece/devel/lib/genom/pocolibs/plugins
 workspace: /home/onepiece/mjacquet/genom_obelix/
+setup: 
+    - ~/.genom_env.sh
+    - /opt/ros/humble/setup.bash
+    - ~/work/ws_livox/ros2/install/setup.bash
 
 inertial:
     mass: 3.22
+    Jxx: 0.011549
+    Jyy: 0.011368
+    Jzz: 0.019444
+
 geom:
     rotors: 6
     armlen: 0.39
-    cf: 11.4e-4
+    cf: 11.25e-4
     ct: 2.4e-5
     rx: -20
     rz: -1
@@ -32,23 +40,24 @@ components:
                 name: imu
                 port: rotorcraft/imu
 
-    pom_lidar:
+    pom:
         type: pom
         meas:
             -
                 name: lidar
                 port: ros2/lio
-                offset: [0, 0, 0.109, 0, 0, 0]
             -
                 name: imu
                 port: rotorcraft/imu
+                offset: [0, 0, -0.109, 0, 0, 0]
 
     uavpos:
         type: uavpos
+        reference: maneuver/desired
         xyradius: 2
         gain:
             Kpxy: 20
-            Kpz: 15
+            Kpz: 20
             Kvxy: 10
             Kvz: 10
             Kixy: 0
@@ -69,22 +78,34 @@ components:
         amax: 3
         dwmax: 2
 
+    phynt:
+        type: phynt
+        wo:
+            K: [10.0, 10.0, 10.0, 2.0, 2.0, 2.0]
+            fc: [20, 20, 20, 0, 0, 0]
+            thresh: [0, 0, 0, 0, 0, 0]
+            bias: [0, 0, 0, 0, 0, 0]
+        af:
+            K: [10, 10, 10, 100, 100, 100]
+
 external_publishers:
     lidar:
         target: pom_lidar
         publisher: measure
         port: ros2/lio
 
+sidecars:
+    lio_relay: python3 scripts/lio_relay.py tx_sim /mimosa/odometry
+    rviz_bridge: python3 scripts/rviz_bridge.py tx_sim 20
+    rviz: rviz2 -d ros2/config/rviz_livox.rviz > /dev/null 2>&1
+
 ros2:
     enabled: true
     domain_id: 42
-    rviz: false
-    mode: livox  # none, livox or gazebo
-    setup:
-        - /opt/ros/humble/setup.bash
-        - ~/ws_ros_livox/install/setup.bash
+    launchfiles:
+        - launch_mimosa_gz.py
     bag:
-      - /rko_lio/odometry
+      - /mimosa/odometry
       - /tf
       - /tf_static
       - /livox/lidar

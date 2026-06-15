@@ -33,7 +33,7 @@ def main():
     io = RobotIO(config_arg)
     io.setup()
 
-    mission = Mission(io, relative=False)
+    mission = Mission(io, relative=False, rosbag=True)
     mission.start_logs()
 
     mission.spin()
@@ -47,7 +47,7 @@ def main():
     mission.goto(*ee_to_body(4.5,0,1,0), duration=3, prompt=True)
 
     mission.goto(0, 0, 1, 0, prompt=True)
-    mission.land(z=0.2, prompt=True)
+    mission.gotoz(z=0.2, prompt=True)
     mission.stop(prompt=True)
 
 
