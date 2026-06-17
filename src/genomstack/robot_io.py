@@ -27,6 +27,7 @@ class RobotIO:
         'uavatt': UavAtt,
         'maneuver': Maneuver,
         'phynt': Phynt,
+        'nhfc': Nhfc,
     }
 
     def __init__(self, cfg: str, silent: bool = False):
