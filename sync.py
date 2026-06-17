@@ -7,7 +7,7 @@ from genomstack.process import is_localhost
 
 
 def rsync_excludes(root):
-    excludes = ['.git/']
+    excludes = ['.git/', 'logs/']
     gitignore = root / '.gitignore'
     with open(gitignore, 'r') as f:
         excludes += [
