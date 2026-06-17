@@ -40,7 +40,7 @@ def make_launch_description(config_dir):
                 ],
                 remappings=[
                     ('~/imu/manager/imu_in', '/livox/imu'),
-                    ('~/lidar/manager/lidar_in', '/livox/lidar_mimosa'),
+                    ('~/lidar/manager/lidar_in', '/livox/lidar'),
                     ('~/lidar/geometric/map', '/mimosa/local_map'),
                     ('~/graph/odometry', '/mimosa/odometry'),
                     ('~/imu/manager/odometry', '/mimosa/odometry_imufreq'),
