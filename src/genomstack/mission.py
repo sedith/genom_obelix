@@ -2,7 +2,7 @@ import os
 import shlex
 import subprocess
 import numpy as np
-from .process import LocalRunner, RemoteTmuxRunner
+from .process import LocalRunner
 from .robot_io import RobotIO
 from .utils import is_localhost, quat2yaw
 
@@ -11,7 +11,10 @@ class Mission:
     def __init__(self, io: RobotIO, relative: bool = False, rosbag: bool = False):
         self.io = io
         self.relative = relative
-        self.bag_runner = LocalRunner(setup=self.io.cfg.setup) if rosbag and self.io.cfg.ros2.enabled else None
+        self.rosbag = rosbag
+        self.bag_runner = None
+        # if rosbag and self.io.cfg.ros2.enabled and is_localhost(self.io.cfg.host):
+        #     self.bag_runner = LocalRunner(workspace=self.io.cfg.root, setup=self.io.cfg.setup)
         self.logging = False
 
         if self.relative:
@@ -22,22 +25,43 @@ class Mission:
         if self.logging:
             return
         print('start log')
-        self.io.cfg.tmp_dir.mkdir(exist_ok=True)
 
         ## logs genom
         for c in self.io.components.values():
             c.start_log()
 
-        if self.bag_runner is not None:
-            self.bag_runner.stop_all(timeout=1.0)
-            bag_dir = self.io.cfg.tmp_dir / 'bag'
-            commands = [
-                f'rm -rf {shlex.quote(str(bag_dir))}',
-                'export ROS_LOCALHOST_ONLY=0',
-                f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
-            ]
-            commands.append(f'ros2 bag record -o {shlex.quote(str(bag_dir))} {" ".join(topic for topic in self.io.cfg.ros2.bag)}')
-            self.bag_runner.start('rosbag', commands, wait=1.0)
+        # if self.bag_runner is not None:
+        #     self.bag_runner.stop_all(timeout=1.0)
+        #     commands = [
+        #         f'rm -rf {shlex.quote(str(self.io.cfg.tmp_dir / "bag"))}',
+        #         'export ROS_LOCALHOST_ONLY=0',
+        #         f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
+        #         f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
+        #     ]
+
+        #     self.bag_runner.start(
+        #         'rosbag',
+        #         commands,
+        #         wait=1.0,
+        #     )
+
+            # Later, for remote recording:
+            # self.bag_runner = RemoteTmuxRunner(
+            #     host=self.io.cfg.host,
+            #     workspace=self.io.cfg.workspace,
+            #     session='genomstack_rosbag',
+            # )
+            # commands = [
+            #     'export ROS_LOCALHOST_ONLY=0',
+            #     f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
+            #     f'rm -rf {shlex.quote(str(self.io.cfg.tmp_dir / "bag"))}',
+            #     f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
+            # ]
+            # self.bag_runner.start(
+            #     'rosbag',
+            #     commands,
+            #     wait=1.0,
+            # )
 
         self.logging = True
 
@@ -50,8 +74,7 @@ class Mission:
         for c in self.io.components.values():
             c.stop_log()
 
-        if self.bag_runner is not None:
-            self.bag_runner.stop_all(timeout=1.0)
+        # if self.bag_runner v top_all(timeout=1.0)
 
         self.logging = False
 
@@ -88,7 +111,8 @@ class Mission:
     ## mission helpers
     def spin(self) -> None:
         print(f'- start spinning and logging')
-        self.io.components['phynt'].call('set_wo_zero', 1)
+        if 'phynt' in self.io.components:
+            self.io.components['phynt'].call('set_wo_zero', 1)
         self.io.components['rotorcraft'].call('start')
 
     def start(self, z_start=0.25, ramp_duration=5, prompt=False) -> None:
