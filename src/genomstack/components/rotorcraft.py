@@ -10,7 +10,7 @@ class Rotorcraft(Component):
         })
 
         self.call('set_sensor_rate', {
-            'rate': {'imu': 1000, 'mag': 0, 'motor': 100, 'battery': 1}
+            'rate': {'imu': 1000, 'mag': 0, 'motor': 20, 'battery': 1}
         })
         self.call('set_imu_filter', {
             'gfc': [20, 20, 20],

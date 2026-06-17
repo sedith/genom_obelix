@@ -6,7 +6,7 @@ setup:
     - ~/work/ws_livox/ros2/install/setup.bash
     
 inertial:
-    mass: 2.765
+    mass: 3.185
     Jxx: 0.0115
     Jyy: 0.0115
     Jzz: 0.0194
@@ -20,7 +20,7 @@ geom:
     rz: -1
 
 gz:
-    world: tilthex.world
+    world: tilthex_lidar.world
     options: -s -r
 
 components:
@@ -39,10 +39,11 @@ components:
         meas:
             -
                 name: mocap
-                port: mocap/bodies/TX
+                port: mocap/bodies/tx
             -
                 name: imu
                 port: rotorcraft/imu
+                offset: [0, 0, -0.075, 0, 0, 0]
 
     pom:
         type: pom
@@ -109,8 +110,14 @@ ros2:
     launchfiles:
         - launch_mimosa_gz.py
     bag:
-      - /mimosa/odometry
-      - /tf
-      - /tf_static
-      - /livox/lidar
-      - /livox/imu
+        - /mimosa/odometry
+        - /mimosa/odometry_imufreq
+        - /mimosa/local_map
+        - /tf
+        - /tf_static
+        - /livox/lidar
+        - /livox/imu
+        - /genom/pom/odometry
+        - /genom/pom_mocap/odometry
+        - /genom/maneuver/desired
+        - /genom/phynt/desired

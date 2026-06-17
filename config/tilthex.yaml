@@ -2,12 +2,12 @@ host: porche
 plugin_path: /home/onepiece/devel/lib/genom/pocolibs/plugins
 workspace: /home/onepiece/mjacquet/genom_obelix/
 setup: 
-    - ~/.genom_env.sh
+    - ~/.onepiece.bashrc
     - /opt/ros/humble/setup.bash
-    - ~/work/ws_livox/ros2/install/setup.bash
+    - ~/ws_ros_livox/install/setup.bash
 
 inertial:
-    mass: 3.22
+    mass: 3.34
     Jxx: 0.011549
     Jyy: 0.011368
     Jzz: 0.019444
@@ -78,35 +78,40 @@ components:
         amax: 3
         dwmax: 2
 
-    phynt:
-        type: phynt
-        wo:
-            K: [10.0, 10.0, 10.0, 2.0, 2.0, 2.0]
-            fc: [20, 20, 20, 0, 0, 0]
-            thresh: [0, 0, 0, 0, 0, 0]
-            bias: [0, 0, 0, 0, 0, 0]
-        af:
-            K: [10, 10, 10, 100, 100, 100]
+    # phynt:
+    #     type: phynt
+    #     wo:
+    #         K: [10.0, 10.0, 10.0, 2.0, 2.0, 2.0]
+    #         fc: [20, 20, 20, 0, 0, 0]
+    #         thresh: [0, 0, 0, 0, 0, 0]
+    #         bias: [0, 0, 0, 0, 0, 0]
+    #     af:
+    #         K: [10, 10, 10, 100, 100, 100]
 
 external_publishers:
     lidar:
-        target: pom_lidar
+        target: pom
         publisher: measure
         port: ros2/lio
 
 sidecars:
-    lio_relay: python3 scripts/lio_relay.py tx_sim /mimosa/odometry
-    rviz_bridge: python3 scripts/rviz_bridge.py tx_sim 20
-    rviz: rviz2 -d ros2/config/rviz_livox.rviz > /dev/null 2>&1
+    lio_relay: python3 scripts/lio_relay.py tilthex /mimosa/odometry
+    rviz_bridge: python3 scripts/rviz_bridge.py tilthex 20
 
 ros2:
     enabled: true
     domain_id: 42
     launchfiles:
-        - launch_mimosa_gz.py
+        - launch_mimosa_livox.py
     bag:
-      - /mimosa/odometry
-      - /tf
-      - /tf_static
-      - /livox/lidar
-      - /livox/imu
+        - /mimosa/odometry
+        - /mimosa/odometry_imufreq
+        - /mimosa/local_map
+        - /tf
+        - /tf_static
+        - /livox/lidar
+        - /livox/imu
+        - /genom/pom/odometry
+        - /genom/pom_mocap/odometry
+        - /genom/maneuver/desired
+        - /genom/phynt/desired

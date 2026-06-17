@@ -2,7 +2,6 @@
 <sdf version="1.5">
   <model name="mrsim-rotor">
     <link name="propeller">
-      <gravity>0</gravity>
       <inertial>
         <mass>0.07</mass>
         <inertia>

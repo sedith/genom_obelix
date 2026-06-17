@@ -277,7 +277,7 @@
             </link>
     </model>
 
-    <model name="TX">
+    <model name="tx">
         <pose>0 0 0.2 0 0 0</pose>
         <include>
             <uri>model://mrsim-tilthex</uri>
@@ -294,7 +294,7 @@
         </joint>
         <include>
             <pose>0.05 0 0.03 0 0 0.5236</pose>
-            <uri>model://tilthex-ee</uri>
+            <uri>model://ee</uri>
             <name>ee</name>
         </include>
         <joint name="ee_joint" type="fixed">
@@ -307,8 +307,8 @@
         <hz>1000</hz>
         <port>1509</port>
         <publish>
-            <link>TX::livox::base</link>
-            <name>TX</name>
+            <link>tx::livox::base</link>
+            <name>tx</name>
         </publish>
     </plugin>
 </world>

@@ -18,8 +18,8 @@ class UavPos(Component):
 
 class UavAtt(Component):
     def setup(self) -> None:
-        self.call('set_mass', mass=self.cfg.inertial.mass)
         self.call('set_gtmrp_geom', self.cfg.geom)
+        self.call('set_mass', mass=self.cfg.inertial.mass)
         self.call('set_servo_gain', gain=self.component_cfg.gain)
         self.call('set_emerg', emerg={
             'dq': 9.5,

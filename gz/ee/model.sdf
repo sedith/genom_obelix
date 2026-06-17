@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
-<model name="tilthex-ee">
+<model name="ee">
     <link name="base">
         <inertial>
             <mass>0.05</mass>

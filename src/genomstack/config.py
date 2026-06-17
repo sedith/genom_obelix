@@ -56,6 +56,7 @@ class Config(AttrDict):
         self.root = root
         self.config_file = config_file
         self.tmp_dir = Path('/tmp/genom_obelix/')
+        self.tmp_dir.mkdir(exist_ok=True)
 
         self.inertial.J = [
             self.inertial.Jxx, 0.0, 0.0, 

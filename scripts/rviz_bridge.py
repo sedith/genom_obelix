@@ -152,17 +152,19 @@ class RvizBridge(Node):
         self.ref_man_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
         self.ref_phynt_pub = self.create_publisher(PoseStamped, '/genom/phynt/desired', 10)
 
-        self.model_pub = self.create_publisher(MarkerArray, '/genom/robot_model', 10)
-        world_file = self.io.cfg.root / 'gz' / self.io.cfg.gz.world
-        self.model_markers = parse_sdf_visual_markers(world_file, 'TX', frame_id='body')
+        if 'gz' in self.io.cfg:
+            self.model_pub = self.create_publisher(MarkerArray, '/genom/robot_model', 10)
+            world_file = self.io.cfg.root / 'gz' / self.io.cfg.gz.world
+            self.model_markers = parse_sdf_visual_markers(world_file, 'qr', frame_id='body')
 
         self.timer = self.create_timer(1.0 / rate_hz, self.update)
 
     def update(self):
-        msg = MarkerArray()
-        for marker in self.model_markers:
-            msg.markers.append(marker)
-        self.model_pub.publish(msg)
+        if 'gz' in self.io.cfg:
+            msg = MarkerArray()
+            for marker in self.model_markers:
+                msg.markers.append(marker)
+            self.model_pub.publish(msg)
 
         try:
             genom_data = self.io.read('pom', 'frame/robot')['frame']
