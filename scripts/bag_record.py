@@ -20,8 +20,8 @@ def main():
         print('ros2 bag disabled')
         return 0
 
-    bag_dir = cfg.tmp_dir / 'bag'
-    os.makedirs(cfg.tmp_dir, exist_ok=True)
+    bag_dir = cfg.tmp_path / 'bag'
+    os.makedirs(cfg.tmp_path, exist_ok=True)
 
     cmd = [
         'ros2',

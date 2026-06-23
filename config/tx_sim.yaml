@@ -1,5 +1,7 @@
 host: localhost
 plugin_path: ""
+# tmp_path: /tmp/genom_obelix
+tmp_path: ~/foo/bar
 setup: 
     - ~/.genom_env.sh
     - /opt/ros/humble/setup.bash

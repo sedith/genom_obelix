@@ -18,5 +18,5 @@ class Pom(Component):
             self.call('add_measurement', meas.name, *meas.offset if 'offset' in meas else [])
 
     def start_log(self) -> None:
-        self.call('log_state', f'{self.cfg.tmp_dir}/{self.name}.log')
-        self.call('log_measurements',  f'{self.cfg.tmp_dir}/{self.name}-measurements.log')
+        self.call('log_state', f'{self.cfg.tmp_path}/{self.name}.log')
+        self.call('log_measurements',  f'{self.cfg.tmp_path}/{self.name}-measurements.log')

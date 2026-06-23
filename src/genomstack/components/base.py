@@ -43,7 +43,7 @@ class Component:
 
     def start_log(self) -> None:
         """Start component-specific logging."""
-        self.call('log', f'{self.cfg.tmp_dir}/{self.name}.log')
+        self.call('log', f'{self.cfg.tmp_path}/{self.name}.log')
 
     def stop_log(self) -> None:
         """Stop component-specific logging."""

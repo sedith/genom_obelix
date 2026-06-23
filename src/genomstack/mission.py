@@ -33,7 +33,7 @@ class Mission:
         # if self.bag_runner is not None:
         #     self.bag_runner.stop_all(timeout=1.0)
         #     commands = [
-        #         f'rm -rf {shlex.quote(str(self.io.cfg.tmp_dir / "bag"))}',
+        #         f'rm -rf {shlex.quote(str(self.io.cfg.tmp_path / "bag"))}',
         #         'export ROS_LOCALHOST_ONLY=0',
         #         f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
         #         f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
@@ -54,7 +54,7 @@ class Mission:
             # commands = [
             #     'export ROS_LOCALHOST_ONLY=0',
             #     f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
-            #     f'rm -rf {shlex.quote(str(self.io.cfg.tmp_dir / "bag"))}',
+            #     f'rm -rf {shlex.quote(str(self.io.cfg.tmp_path / "bag"))}',
             #     f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
             # ]
             # self.bag_runner.start(
@@ -81,11 +81,11 @@ class Mission:
     def export_logs(self) -> None:
         self.io.cfg.log_dir.mkdir(parents=True, exist_ok=True)
         if is_localhost(self.io.cfg.host):
-            for f in self.io.cfg.tmp_dir.glob('*'):
+            for f in self.io.cfg.tmp_path.glob('*'):
                 os.rename(str(f), f'{self.io.cfg.log_dir}/{f.name}')
         else:
-            subprocess.run(['scp', '-r', f'{self.io.cfg.host}:{self.io.cfg.tmp_dir}/*', f'{self.io.cfg.log_dir}'], check=True)
-            subprocess.run(['ssh', self.io.cfg.host, f'rm -r {self.io.cfg.tmp_dir}/*'], check=True)
+            subprocess.run(['scp', '-r', f'{self.io.cfg.host}:{self.io.cfg.tmp_path}/*', f'{self.io.cfg.log_dir}'], check=True)
+            subprocess.run(['ssh', self.io.cfg.host, f'rm -r {self.io.cfg.tmp_path}/*'], check=True)
 
     ## transform helpers
     def set_origin(self) -> None:

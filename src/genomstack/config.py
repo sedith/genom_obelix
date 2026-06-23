@@ -36,37 +36,35 @@ class AttrDict(dict):
 
 class Config(AttrDict):
     def __init__(self, config_file: str | Path):
-        root = find_workspace_root()
+        self.root = find_workspace_root()
 
-        config_file = Path(config_file)
-        if config_file.is_absolute():
+        self.config_file = Path(config_file)
+        if self.config_file.is_absolute():
             pass
-        elif config_file.parent == Path('.'):
-            config_file = root / 'config' / config_file
+        elif self.config_file.parent == Path('.'):
+            self.config_file = self.root / 'config' / self.config_file
         else:
-            config_file = root / config_file
-        if not config_file.suffix:
-            config_file = config_file.with_suffix(".yaml")
+            self.config_file = self.root / self.config_file
+        if not self.config_file.suffix:
+            self.config_file = self.config_file.with_suffix(".yaml")
 
-        with open(config_file, 'r') as f:
+        with open(self.config_file, 'r') as f:
             yaml_dict = yaml.safe_load(f)
 
         super(Config, self).__init__(yaml_dict)
 
-        self.root = root
-        self.config_file = config_file
-        self.tmp_dir = Path('/tmp/genom_obelix/')
-        self.tmp_dir.mkdir(exist_ok=True)
+        self.tmp_path = Path(self.tmp_path).expanduser()
+        self.tmp_path.mkdir(parents=True, exist_ok=True)
 
         self.inertial.J = [
             self.inertial.Jxx, 0.0, 0.0, 
             0.0, self.inertial.Jyy, 0.0,
-            0.0, 0.0, self.inertial.Jzz
+            0.0, 0.0, self.inertial.Jzz,
         ]
 
         if 'rotorcraft' in self.components:
             self.components.rotorcraft.calib_file = self.root / 'calib' / self.components.rotorcraft.calib
-        self.log_dir = self.root / 'logs' / f'{config_file.stem}_{time.strftime("%y%m%d_%H%M%S")}'
+        self.log_dir = self.root / 'logs' / f'{time.strftime("%y%m%d_%H%M%S")}_{self.config_file.stem}'
 
         if 'ros2' not in yaml_dict or self.ros2 is None:
             self.ros2 = {'enabled': False}

@@ -1,5 +1,6 @@
 host: porche
 plugin_path: /home/onepiece/devel/lib/genom/pocolibs/plugins
+tmp_path: ~/mjacquet/tmp/
 workspace: /home/onepiece/mjacquet/genom_obelix/
 setup: 
     - ~/.onepiece.bashrc
