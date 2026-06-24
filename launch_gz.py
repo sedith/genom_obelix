@@ -8,10 +8,10 @@ def main():
         print('usage: python3 launch_ros2.py <config name>.yaml')
         return 1
     config_arg = sys.argv[1]
-    
-    cfg = Config(config_arg)
 
+    cfg = Config(config_arg)
     runner = LocalRunner(workspace=str(cfg.root / 'gz'), setup=cfg.setup)
+
     try:
         runner.start('gz', [f'gz sim {cfg.gz.options} {cfg.gz.world}'])
         runner.hang()

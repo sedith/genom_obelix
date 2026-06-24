@@ -2,7 +2,6 @@ from __future__ import annotations
 from pathlib import Path
 import time
 import yaml
-from .utils import is_localhost
 
 
 def find_workspace_root(start: Path | None = None) -> Path:
@@ -53,8 +52,13 @@ class Config(AttrDict):
 
         super(Config, self).__init__(yaml_dict)
 
-        self.tmp_path = Path(self.tmp_path).expanduser()
-        self.tmp_path.mkdir(parents=True, exist_ok=True)
+        self.tmp_path = Path(self.tmp_path)
+        if 'workspace' in self and self.workspace:
+            self.workspace = Path(self.workspace)
+        if 'plugin_path' in self and self.plugin_path:
+            self.plugin_path = Path(self.plugin_path)
+        if 'setup' in self and self.setup:
+            self.setup = [Path(path) for path in self.setup]
 
         self.inertial.J = [
             self.inertial.Jxx, 0.0, 0.0, 

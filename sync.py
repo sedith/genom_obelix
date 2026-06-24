@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
-import shlex
 from genomstack.config import Config
-from genomstack.process import is_localhost
+from genomstack.process import is_localhost, shell_path
 
 
 def rsync_excludes(root):
@@ -33,10 +32,11 @@ def main():
         return 1
 
     src = str(cfg.root) + '/'
-    dst = f'{cfg.host}:{cfg.workspace.rstrip("/")}/'
+    workspace = str(cfg.workspace).rstrip('/')
+    dst = f'{cfg.host}:{workspace}/'
 
     subprocess.run(
-        ['ssh', cfg.host, f'mkdir -p {shlex.quote(cfg.workspace)}'],
+        ['ssh', cfg.host, f'mkdir -p {shell_path(cfg.workspace)}'],
         check=True,
     )
 

@@ -16,6 +16,7 @@ def main():
         return 0
 
     runner = LocalRunner(workspace=str(cfg.root), setup=cfg.setup)
+
     try:
         for launchfile in cfg.ros2.launchfiles:
             cmds = [

@@ -1,5 +1,6 @@
 from .config import Config
 from .components import Component
+from .process import host_path
 import genomix
 
 
@@ -11,7 +12,7 @@ class Genomix:
 
     def connect(self) -> None:
         self.g = genomix.connect(self.cfg.host)
-        self.g.rpath(self.cfg.plugin_path)
+        self.g.rpath(host_path(self.cfg.plugin_path, self.cfg.host))
 
     def load(self, component: Component) -> None:
         if component.name not in self._handles:

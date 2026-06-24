@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 import os
 import sys
-
 from genomstack.config import Config
+from genomstack.process import host_path
 
 
 def main():
     if len(sys.argv) != 2:
         print('usage: python3 scripts/bag_record.py <config name>.yaml')
         return 1
+    config_arg = sys.argv[1]
 
-    cfg = Config(sys.argv[1])
+    cfg = Config(config_arg)
 
     if not cfg.ros2.enabled:
         print('ros2 disabled')
@@ -20,15 +21,14 @@ def main():
         print('ros2 bag disabled')
         return 0
 
-    bag_dir = cfg.tmp_path / 'bag'
-    os.makedirs(cfg.tmp_path, exist_ok=True)
+    path = host_path(cfg.tmp_path / 'bag', 'localhost')
 
     cmd = [
         'ros2',
         'bag',
         'record',
         '-o',
-        str(bag_dir),
+        path,
         *cfg.ros2.bag,
     ]
     os.execvp(cmd[0], cmd)

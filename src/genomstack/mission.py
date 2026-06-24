@@ -2,9 +2,9 @@ import os
 import shlex
 import subprocess
 import numpy as np
-from .process import LocalRunner
+from .process import LocalRunner, RemoteTmuxRunner, is_localhost, shell_path
 from .robot_io import RobotIO
-from .utils import is_localhost, quat2yaw
+from .utils import quat2yaw
 
 
 class Mission:
@@ -12,9 +12,13 @@ class Mission:
         self.io = io
         self.relative = relative
         self.rosbag = rosbag
-        self.bag_runner = None
-        # if rosbag and self.io.cfg.ros2.enabled and is_localhost(self.io.cfg.host):
-        #     self.bag_runner = LocalRunner(workspace=self.io.cfg.root, setup=self.io.cfg.setup)
+        if rosbag and self.io.cfg.ros2.enabled:
+            if is_localhost(self.io.cfg.host):
+                self.bag_runner = LocalRunner(workspace=self.io.cfg.root, setup=self.io.cfg.setup)
+            else:
+                self.bag_runner = RemoteTmuxRunner(host=self.io.cfg.host, workspace=self.io.cfg.workspace, setup=self.io.cfg.setup, session='genomstack_rosbag')
+        else:
+            self.bag_runner = None
         self.logging = False
 
         if self.relative:
@@ -30,38 +34,21 @@ class Mission:
         for c in self.io.components.values():
             c.start_log()
 
-        # if self.bag_runner is not None:
-        #     self.bag_runner.stop_all(timeout=1.0)
-        #     commands = [
-        #         f'rm -rf {shlex.quote(str(self.io.cfg.tmp_path / "bag"))}',
-        #         'export ROS_LOCALHOST_ONLY=0',
-        #         f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
-        #         f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
-        #     ]
+        if self.bag_runner is not None:
+            self.bag_runner.stop_all(timeout=1.0)
+            bag_dir = self.io.cfg.tmp_path / 'bag'
+            commands = [
+                f'rm -rf {shell_path(bag_dir, expand=is_localhost(self.io.cfg.host))}',
+                'export ROS_LOCALHOST_ONLY=0',
+                f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
+                f'python3 scripts/bag_record.py {shlex.quote(self.io.cfg.config_file.name)}',
+            ]
 
-        #     self.bag_runner.start(
-        #         'rosbag',
-        #         commands,
-        #         wait=1.0,
-        #     )
-
-            # Later, for remote recording:
-            # self.bag_runner = RemoteTmuxRunner(
-            #     host=self.io.cfg.host,
-            #     workspace=self.io.cfg.workspace,
-            #     session='genomstack_rosbag',
-            # )
-            # commands = [
-            #     'export ROS_LOCALHOST_ONLY=0',
-            #     f'export ROS_DOMAIN_ID={self.io.cfg.ros2.domain_id}',
-            #     f'rm -rf {shlex.quote(str(self.io.cfg.tmp_path / "bag"))}',
-            #     f'python3 scripts/bag_record.py {self.io.cfg.config_file.name}',
-            # ]
-            # self.bag_runner.start(
-            #     'rosbag',
-            #     commands,
-            #     wait=1.0,
-            # )
+            self.bag_runner.start(
+                'rosbag',
+                commands,
+                wait=2.0,
+            )
 
         self.logging = True
 
@@ -74,18 +61,19 @@ class Mission:
         for c in self.io.components.values():
             c.stop_log()
 
-        # if self.bag_runner v top_all(timeout=1.0)
+        if self.bag_runner:
+            self.bag_runner.stop_all(timeout=1.0)
 
         self.logging = False
 
     def export_logs(self) -> None:
         self.io.cfg.log_dir.mkdir(parents=True, exist_ok=True)
         if is_localhost(self.io.cfg.host):
-            for f in self.io.cfg.tmp_path.glob('*'):
+            for f in self.io.cfg.tmp_path.expanduser().glob('*'):
                 os.rename(str(f), f'{self.io.cfg.log_dir}/{f.name}')
         else:
             subprocess.run(['scp', '-r', f'{self.io.cfg.host}:{self.io.cfg.tmp_path}/*', f'{self.io.cfg.log_dir}'], check=True)
-            subprocess.run(['ssh', self.io.cfg.host, f'rm -r {self.io.cfg.tmp_path}/*'], check=True)
+            subprocess.run(['ssh', self.io.cfg.host, f'rm -r {shell_path(self.io.cfg.tmp_path)}/*'], check=True)
 
     ## transform helpers
     def set_origin(self) -> None:

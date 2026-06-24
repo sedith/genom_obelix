@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Any
+from ..process import host_path
 
 
 class Component:
@@ -43,7 +44,8 @@ class Component:
 
     def start_log(self) -> None:
         """Start component-specific logging."""
-        self.call('log', f'{self.cfg.tmp_path}/{self.name}.log')
+        log_dir = host_path(self.cfg.tmp_path, self.cfg.host)
+        self.call('log', f'{log_dir}/{self.name}.log')
 
     def stop_log(self) -> None:
         """Stop component-specific logging."""

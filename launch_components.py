@@ -8,8 +8,9 @@ def main():
         print('usage: python3 launch_ros2.py <config name>.yaml')
         return 1
     config_arg = sys.argv[1]
-    
+
     cfg = Config(config_arg)
+    cfg.tmp_path.expanduser().mkdir(parents=True, exist_ok=True)
     runner = LocalRunner(workspace=cfg.root, setup=cfg.setup)
     delay = 0.5
 
