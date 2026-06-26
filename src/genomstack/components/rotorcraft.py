@@ -3,6 +3,8 @@ import json
 
 
 class Rotorcraft(Component):
+    START_ORDER = 10
+
     def setup(self) -> None:
         self.call('connect', {
             'serial': self.component_cfg.serial,
@@ -28,3 +30,6 @@ class Rotorcraft(Component):
         self.connect_port('rotor_input', 'nhfc/rotor_input')
 
         self.call('stop')
+
+    def start(self) -> None:
+        self.call('servo', ack=True)

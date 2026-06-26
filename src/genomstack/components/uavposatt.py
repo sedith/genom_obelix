@@ -2,6 +2,8 @@ from .base import Component
 
 
 class UavPos(Component):
+    START_ORDER = 40
+
     def setup(self) -> None:
         self.call('set_mass', mass=self.cfg.inertial.mass)
         self.call('set_xyradius', rxy=self.component_cfg.xyradius)
@@ -15,8 +17,13 @@ class UavPos(Component):
         self.connect_port('state', 'pom/frame/robot')
         self.connect_port('reference', 'maneuver/desired')
 
+    def start(self) -> None:
+        self.call('servo', ack=True)
+
 
 class UavAtt(Component):
+    START_ORDER = 40
+
     def setup(self) -> None:
         self.call('set_gtmrp_geom', self.cfg.geom)
         self.call('set_mass', mass=self.cfg.inertial.mass)
@@ -33,3 +40,6 @@ class UavAtt(Component):
         self.connect_port('state', 'pom/frame/robot')
         self.connect_port('uav_input', 'uavpos/uav_input')
         self.connect_port('rotor_measure', 'rotorcraft/rotor_measure')
+
+    def start(self) -> None:
+        self.call('servo', ack=True)

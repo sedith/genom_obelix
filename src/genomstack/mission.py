@@ -107,15 +107,8 @@ class Mission:
         _, _, z_start, _ = self.transform_pose(0, 0, z_start, 0)
         print(f'- start: {z_start:.3f} [m] -- duration: {ramp_duration} [s]')
         if prompt: input('  | press enter ...')
-        self.io.components['rotorcraft'].call('servo', ack=True)
-        self.io.components['maneuver'].call('set_current_state')
-        if 'phynt' in self.io.components:
-            self.io.components['phynt'].call('stop', ack=True)
-            self.io.components['phynt'].call('set_current_position')
-            self.io.components['phynt'].call('servo', ack=True)
+        self.io.start_components()
         self.io.components['maneuver'].call('take_off', z_start, ramp_duration, ack=True)
-        self.io.components['uavpos'].call('servo', ack=True)
-        self.io.components['uavatt'].call('servo', ack=True)
         
     def goto(self, x, y, z, yaw, duration=0, prompt=False) -> None:
         x, y, z, yaw = self.transform_pose(x, y, z, yaw)

@@ -3,6 +3,8 @@ from .base import Component
 
 
 class Phynt(Component):
+    START_ORDER = 30
+
     def setup(self) -> None:
         self.call('set_mass', self.cfg.inertial.mass)
         self.call('set_geom', self.cfg.inertial.J)
@@ -25,6 +27,11 @@ class Phynt(Component):
         self.connect_port('state', 'pom/frame/robot')
         self.connect_port('reference', 'maneuver/desired')
         self.connect_port('wrench_measure', 'nhfc/wrench_measure')
+
+    def start(self) -> None:
+        self.call('stop', ack=True)
+        self.call('set_current_position')
+        self.call('servo', ack=True)
 
     def critical_damping(self) -> dict:
         m = self.cfg.inertial.mass

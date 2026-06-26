@@ -3,6 +3,8 @@ from math import pi
 
 
 class Maneuver(Component):
+    START_ORDER = 20
+
     def setup(self) -> None:
         self.call('set_bounds', {
             'xmin': -10, 'xmax': 10,
@@ -22,3 +24,6 @@ class Maneuver(Component):
         })
 
         self.connect_port('state', 'pom/frame/robot')
+
+    def start(self) -> None:
+        self.call('set_current_state')

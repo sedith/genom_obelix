@@ -66,6 +66,17 @@ class RobotIO:
             print(f'setup {c.name}...')
             c.setup()
 
+    def start_components(self) -> None:
+        indexed = enumerate(self.components.values())
+        components = sorted(
+            indexed,
+            key=lambda item: (item[1].START_ORDER, item[0]),
+        )
+
+        for _, component in components:
+            print(f'start {component.name}...')
+            component.start()
+
     def read(self, component_name: str, port: str) -> dict:
         port, *subport = port.split('/')
         return self.components[component_name].call(port, *subport)

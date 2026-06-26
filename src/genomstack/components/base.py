@@ -4,6 +4,8 @@ from ..process import host_path
 
 
 class Component:
+    START_ORDER = 100
+
     def __init__(self, cfg: Config, name: str):
         self.cfg = cfg
         self.name = name
@@ -41,6 +43,10 @@ class Component:
     def setup(self) -> None:
         """Connect external resources, apply configuration and wire ports."""
         raise NotImplementedError()
+
+    def start(self) -> None:
+        """Start component runtime behavior after setup."""
+        pass
 
     def start_log(self) -> None:
         """Start component-specific logging."""

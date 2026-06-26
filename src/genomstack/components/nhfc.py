@@ -2,6 +2,8 @@ from .base import Component
 
 
 class Nhfc(Component):
+    START_ORDER = 40
+
     def setup(self) -> None:
         self.call('set_gtmrp_geom', self.cfg.geom)
         self.call('set_mass', mass=self.cfg.inertial.mass)
@@ -22,3 +24,6 @@ class Nhfc(Component):
 
         self.connect_port('state', 'pom/frame/robot')
         self.connect_port('reference', 'maneuver/desired')
+
+    def start(self) -> None:
+        self.call('servo', ack=True)
