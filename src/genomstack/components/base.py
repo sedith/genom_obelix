@@ -25,7 +25,6 @@ class Component:
 
     def call(self, method: str, *args, **kwargs) -> Any:
         """Call a service/method on the underlying GenoM handle."""
-
         if not hasattr(self.handle, method):
             raise AttributeError(
                 f'Component {self.name} has no method {method}'
@@ -34,8 +33,9 @@ class Component:
         fn = getattr(self.handle, method)
         return fn(*args, **kwargs)
 
-    def connect_port(self, local: str, remote: str) -> None:
-        """Connect a local GenoM port to a remote port."""
+    def connect_port(self, local: str, default_remote: str) -> None:
+        """Connect a local GenoM port to a remote port. default_remote may be overridden by cfg.remap."""
+        remote = self.cfg.remap.get(f'{self.name}.{local}', default_remote)
         return self.call('connect_port', {'local': local, 'remote': remote})
 
     def setup(self) -> None:

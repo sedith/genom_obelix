@@ -25,6 +25,6 @@ class Rotorcraft(Component):
             ]
             self.call('set_imu_calibration', calib)
 
-        self.connect_port('rotor_input', 'uavatt/rotor_input')
+        self.connect_port('rotor_input', 'nhfc/rotor_input')
 
         self.call('stop')

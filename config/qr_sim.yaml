@@ -79,15 +79,7 @@ components:
         amax: 4
         dwmax: 4
 
-    # phynt:
-    #     type: phynt
-    #     wo:
-    #         K: [10.0, 10.0, 10.0, 2.0, 2.0, 2.0]
-    #         fc: [20, 20, 20, 0, 0, 0]
-    #         thresh: [0, 0, 0, 0, 0, 0]
-    #         bias: [0, 0, 0, 0, 0, 0]
-    #     af:
-    #         K: [10, 10, 10, 100, 100, 100]
+remap: {}
 
 external_publishers:
     lidar:

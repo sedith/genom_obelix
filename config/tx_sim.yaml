@@ -59,7 +59,6 @@ components:
 
     uavpos:
         type: uavpos
-        reference: phynt/desired
         xyradius: 2
         gain:
             Kpxy: 10
@@ -93,6 +92,11 @@ components:
             bias: [0, 0, 0, 0, 0, 0]
         af:
             K: [10, 10, 10, 100, 100, 100]
+
+remap:
+    rotorcraft.rotor_input: uavatt/rotor_input
+    phynt.wrench_measure: uavatt/wrench_measure
+    uavpos.reference: phynt/desired
 
 external_publishers:
     lidar:

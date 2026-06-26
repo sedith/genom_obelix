@@ -13,7 +13,7 @@ class UavPos(Component):
         })
 
         self.connect_port('state', 'pom/frame/robot')
-        self.connect_port('reference', self.component_cfg.reference)
+        self.connect_port('reference', 'maneuver/desired')
 
 
 class UavAtt(Component):

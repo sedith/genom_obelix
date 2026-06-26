@@ -27,26 +27,19 @@ components:
         serial: /dev/ttyACM0
         calib: hexa2_260505.json
 
-    # mocap:
-    #     type: qualisys
-    #     host: 10.135.2.40
-
-    # pom:
-    #     type: pom
-    #     meas:
-    #         -
-    #             name: mocap
-    #             port: mocap/bodies/pcHexa2
-    #         -
-    #             name: imu
-    #             port: rotorcraft/imu
+    mocap:
+        type: qualisys
+        host: 10.135.2.40
 
     pom:
         type: pom
         meas:
             -
-                name: lidar
-                port: ros2/lio
+                name: mocap
+                port: mocap/bodies/pcHexa2
+            # -
+            #     name: lidar
+            #     port: ros2/lio
             -
                 name: imu
                 port: rotorcraft/imu
@@ -79,15 +72,8 @@ components:
         amax: 3
         dwmax: 2
 
-    # phynt:
-    #     type: phynt
-    #     wo:
-    #         K: [10.0, 10.0, 10.0, 2.0, 2.0, 2.0]
-    #         fc: [20, 20, 20, 0, 0, 0]
-    #         thresh: [0, 0, 0, 0, 0, 0]
-    #         bias: [0, 0, 0, 0, 0, 0]
-    #     af:
-    #         K: [10, 10, 10, 100, 100, 100]
+remap:
+    rotorcraft.rotor_input: uavatt/rotor_input
 
 external_publishers:
     lidar:
@@ -96,7 +82,7 @@ external_publishers:
         port: ros2/lio
 
 sidecars:
-    # lio_relay: python3 scripts/lio_relay.py tilthex /mimosa/odometry
+    lio_relay: python3 scripts/lio_relay.py tilthex /mimosa/odometry
     rviz_bridge: python3 scripts/rviz_bridge.py tilthex 20
 
 ros2:

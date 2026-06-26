@@ -24,7 +24,7 @@ class Phynt(Component):
 
         self.connect_port('state', 'pom/frame/robot')
         self.connect_port('reference', 'maneuver/desired')
-        self.connect_port('wrench_measure', 'uavatt/wrench_measure')
+        self.connect_port('wrench_measure', 'nhfc/wrench_measure')
 
     def critical_damping(self) -> dict:
         m = self.cfg.inertial.mass

@@ -32,22 +32,21 @@ def main():
 
     io = RobotIO(config_arg)
     io.setup()
+    mission = Mission(io, relative=True, rosbag=True)
 
-    mission = Mission(io, relative=False, rosbag=True)
     mission.start_logs()
 
     mission.spin()
-    mission.start(z_start=0.15, ramp_duration=5, prompt=True)
+    mission.start(z_start=0.3, ramp_duration=5, prompt=True)
 
-    mission.goto(0.25, 0, 1, 0, prompt=True)
+    # mission.goto(-1, 0, 1, 0, duration=0, prompt=True)
+    # mission.goto(-1, 2, 0.75, 1, duration=0, prompt=True)
+    # mission.goto(1, 0, 1, -1, duration=0, prompt=True)
+    # mission.goto(0, -1, 0.8, -2, duration=0, prompt=True)
+    # mission.goto(0, 0, 0.8, -1, duration=0, prompt=True)
+    # mission.goto(0, 0, 0.5, 0, duration=0, prompt=True)
+    # mission.gotoz(z=0.0, prompt=True)
 
-    mission.goto(*ee_to_body(3.5,0,1,0), prompt=True)
-    mission.goto(*ee_to_body(4,0,1,0), duration=3, prompt=True)
-    mission.goto(*ee_to_body(4.1,0,1,0), duration=3, prompt=True)
-    mission.goto(*ee_to_body(4.5,0,1,0), duration=3, prompt=True)
-
-    mission.goto(0, 0, 1, 0, prompt=True)
-    mission.gotoz(z=0.2, prompt=True)
     mission.stop(prompt=True)
 
 
