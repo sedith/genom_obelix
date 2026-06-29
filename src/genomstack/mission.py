@@ -99,8 +99,6 @@ class Mission:
     ## mission helpers
     def spin(self) -> None:
         print(f'- start spinning and logging')
-        if 'phynt' in self.io.components:
-            self.io.components['phynt'].call('set_wo_zero', 1)
         self.io.components['rotorcraft'].call('start')
 
     def start(self, z_start=0.25, ramp_duration=5, prompt=False) -> None:

@@ -16,11 +16,13 @@ class LioRelay(Node):
 
         self.io = RobotIO(config_arg, silent=True)
 
+        ## arguments
         self.topic = topic
         self.publisher_name = 'lidar'
         self.repub_vel = True
-        self.printed = False
         self.min_rate = 9.0
+
+        self.printed = False
         self.last_msg_time = None
         self.last_warn_time = 0.0
         self.cov = Cov().from_stds(std_p=0.001, std_eul=0.01, std_v=0.1, std_w=0.05)

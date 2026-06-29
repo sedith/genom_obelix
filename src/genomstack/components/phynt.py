@@ -30,6 +30,7 @@ class Phynt(Component):
 
     def start(self) -> None:
         self.call('stop', ack=True)
+        self.call('set_wo_zero', {'duration': 1})
         self.call('set_current_position')
         self.call('servo', ack=True)
 

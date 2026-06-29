@@ -132,6 +132,86 @@ def skew(v):
         [-v[1], v[0], 0.0],
     ])
 
+
+def vee(mat):
+    """Return the vee map of a 3x3 skew-symmetric matrix."""
+    return np.array([
+        mat[2, 1] - mat[1, 2],
+        mat[0, 2] - mat[2, 0],
+        mat[1, 0] - mat[0, 1],
+    ])
+
+
+## allocation matrix
+def axis_rot(axis, angle):
+    """Compute the rotation matrix around a given axis, angle in radians."""
+    c = np.cos(angle)
+    s = np.sin(angle)
+    if axis == 'x':
+        return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
+    if axis == 'y':
+        return np.array([[c, 0, s], [0, 1, 0], [-s, 0, c]])
+    if axis == 'z':
+        return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+    raise ValueError(f'unknown rotation axis {axis!r}')
+
+
+def gtmrp_props(n, l, alpha, beta, com=None, alpha0=-1, s0=1):
+    """Return propeller positions, orientations and spin signs for a GTMR platform. alpha and beta are given in degrees."""
+    com = np.zeros(3) if com is None else np.asarray(com, dtype=float)
+    alpha = np.deg2rad(alpha)
+    beta = np.deg2rad(beta)
+
+    positions = []
+    rotations = []
+    signs = []
+    for i in range(n):
+        yaw = i * (np.pi / (n / 2))
+        rz = axis_rot('z', yaw)
+        rotations.append(rz @ axis_rot('y', beta) @ axis_rot('x', alpha0 * (-1) ** i * alpha))
+        positions.append(l * rz @ np.array([1.0, 0.0, 0.0]) + com)
+        signs.append(s0 * (-1) ** i)
+
+    return positions, rotations, signs
+
+
+def gtmrp_matrix(rotations, positions, signs, cf, ct):
+    """Compute force and torque allocation matrices for GTMR propellers."""
+    n = len(rotations)
+    cf = [cf] * n if np.isscalar(cf) else list(cf)
+    ct = [ct] * n if np.isscalar(ct) else list(ct)
+
+    thrust_axes = [np.asarray(r, dtype=float) @ np.array([0.0, 0.0, 1.0]) for r in rotations]
+    gf = np.column_stack(thrust_axes)
+    gt = np.column_stack([
+        np.cross(np.asarray(positions[i], dtype=float), thrust_axes[i])
+        + ct[i] / cf[i] * signs[i] * thrust_axes[i]
+        for i in range(n)
+    ])
+    return gf, gt
+
+
+def allocation_matrix(n, l, alpha, beta=0.0, cf=1.0, ct=0.0, com=None, alpha0=-1, s0=1):
+    """Compute a 6xn wrench allocation matrix mapping rotor thrusts to body wrench."""
+    positions, rotations, signs = gtmrp_props(n, l, alpha, beta, com=com, alpha0=alpha0, s0=s0)
+    gf, gt = gtmrp_matrix(rotations, positions, signs, cf, ct)
+    return np.vstack((gf, gt))
+
+
+def allocation_from_config(geom):
+    """Compute the config-driven allocation matrix used by the rotor speed mixer."""
+    return allocation_matrix(
+        n=int(geom.rotors),
+        l=float(geom.armlen),
+        alpha=float(getattr(geom, 'rx', 0.0)),
+        beta=float(getattr(geom, 'ry', 0.0)),
+        cf=float(geom.cf),
+        ct=float(geom.ct),
+        com=getattr(geom, 'com', None),
+        alpha0=int(getattr(geom, 'alpha0', -1)),
+        s0=int(getattr(geom, 's0', 1)),
+    )
+
 ## host helper
 def is_localhost(host: str) -> bool:
     return host in ('localhost', '127.0.0.1', '::1', socket.gethostname())
