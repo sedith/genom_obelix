@@ -26,7 +26,7 @@ def ee_to_body(x, y, z, yaw):
 
 def main():
     if len(sys.argv) != 2:
-        print('usage: python3 launch_ros2.py <config name>.yaml')
+        print('usage: python3 obelix.py <config name>.yaml')
         return 1
     config_arg = sys.argv[1]
 
@@ -39,13 +39,13 @@ def main():
     mission.spin()
     mission.start(z_start=0.3, ramp_duration=5, prompt=True)
 
-    # mission.goto(-1, 0, 1, 0, duration=0, prompt=True)
-    # mission.goto(-1, 2, 0.75, 1, duration=0, prompt=True)
-    # mission.goto(1, 0, 1, -1, duration=0, prompt=True)
-    # mission.goto(0, -1, 0.8, -2, duration=0, prompt=True)
-    # mission.goto(0, 0, 0.8, -1, duration=0, prompt=True)
-    # mission.goto(0, 0, 0.5, 0, duration=0, prompt=True)
-    # mission.gotoz(z=0.0, prompt=True)
+    mission.goto(-1, 0, 1, 0, duration=0, prompt=True)
+    mission.goto(-1, 2, 0.75, 1, duration=0, prompt=True)
+    mission.goto(1, 0, 1, -1, duration=0, prompt=True)
+    mission.goto(0, -1, 0.8, -2, duration=0, prompt=True)
+    mission.goto(0, 0, 0.8, -1, duration=0, prompt=True)
+    mission.goto(0, 0, 0.5, 0, duration=0, prompt=True)
+    mission.gotoz(z=0.0, prompt=True)
 
     mission.stop(prompt=True)
 

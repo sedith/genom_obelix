@@ -5,7 +5,7 @@ from genomstack import LocalRunner, Config
 
 def main():
     if len(sys.argv) != 2:
-        print('usage: python3 launch_ros2.py <config name>.yaml')
+        print('usage: python3 launch_components.py <config name>.yaml')
         return 1
     config_arg = sys.argv[1]
 

@@ -22,7 +22,7 @@ geom:
 
 gz:
     world: quadrotor_lidar.world
-    options: -s -r
+    options: -r
 
 components:
     rotorcraft:
@@ -35,7 +35,7 @@ components:
         host: localhost
         port: "1509"
 
-    pom_mocap:
+    pom:
         type: pom
         meas:
             -
@@ -46,29 +46,17 @@ components:
                 port: rotorcraft/imu
                 offset: [0, 0, -0.075, 0, 0, 0]
 
-    pom:
-        type: pom
-        meas:
-            -
-                name: lidar
-                port: ros2/lio
-            -
-                name: imu
-                port: rotorcraft/imu
-                offset: [0, 0, -0.075, 0, 0, 0]
-
     nhfc:
         type: nhfc
-        reference: maneuver/desired
         gain:
-            Kpxy: 10
-            Kpz: 10
-            Kqxy: 15
-            Kqz: 15
-            Kvxy: 20
-            Kvz: 20
-            Kwxy: 3
-            Kwz: 1
+            Kpxy: 15
+            Kpz: 15
+            Kqxy: 3
+            Kqz: 3
+            Kvxy: 10
+            Kvz: 10
+            Kwxy: 0.3
+            Kwz: 0.3
             Kixy: 0
             Kiz: 0
 
@@ -81,31 +69,12 @@ components:
 
 remap: {}
 
-external_publishers:
-    lidar:
-        target: pom
-        publisher: measure
-        port: ros2/lio
+external_publishers: {}
 
-sidecars:
-    lio_relay: python3 scripts/lio_relay.py qr_sim /mimosa/odometry
-    rviz_bridge: python3 scripts/rviz_bridge.py qr_sim 20
-    rviz: rviz2 -d ros2/config/rviz_livox.rviz > /dev/null 2>&1
+sidecars: {}
 
 ros2:
-    enabled: true
+    enabled: false
     domain_id: 42
-    launchfiles:
-        - launch_mimosa_gz.py
-    bag:
-        - /mimosa/odometry
-        - /mimosa/odometry_imufreq
-        - /mimosa/local_map
-        - /tf
-        - /tf_static
-        - /livox/lidar
-        - /livox/imu
-        - /genom/pom/odometry
-        - /genom/pom_mocap/odometry
-        - /genom/maneuver/desired
-        - /genom/phynt/desired
+    launchfiles: []
+    bag: 

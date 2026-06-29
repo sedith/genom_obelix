@@ -47,7 +47,6 @@ components:
 
     uavpos:
         type: uavpos
-        reference: maneuver/desired
         xyradius: 2
         gain:
             Kpxy: 20
