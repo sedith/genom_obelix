@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+    <model name='aruco_6X6_250_1'>
+        <link name='tag'>
+            <gravity>0</gravity>
+            <inertial>
+                <mass>0.001</mass>
+                <inertia>
+                    <ixx>1e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                    <iyy>1e-5</iyy><iyz>0</iyz>
+                    <izz>1e-5</izz>
+                </inertia>
+            </inertial>
+            <visual name='front'>
+                <pose>0 0 0 0 0 1.57075</pose>
+                <geometry>
+                    <box>
+                        <size>0.2571428571428571 0.2571428571428571 0.0005</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>1 1 1 1</ambient>
+                    <diffuse>1 1 1 1</diffuse>
+                    <specular>0 0 0 1</specular>
+                    <pbr>
+                        <metal>
+                            <albedo_map>model://aruco_6X6_250_1/materials/textures/aruco_6X6_250_1.png</albedo_map>
+                            <metalness>0.0</metalness>
+                            <roughness>1.0</roughness>
+                        </metal>
+                    </pbr>
+                </material>
+            </visual>
+            <visual name="back">
+                <pose>0 0 -0.001 0 0 1.57075</pose>
+                <geometry>
+                    <box>
+                        <size>0.2571428571428571 0.2571428571428571 0.001</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0 0 0 1</ambient>
+                    <diffuse>0 0 0 1</diffuse>
+                </material>
+            </visual>
+        </link>
+    </model>
+</sdf>

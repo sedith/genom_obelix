@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+<world name="mrsim">
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"> </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"> </plugin>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+        <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="libgz-sim-imu-system" name="gz::sim::systems::Imu" />
+
+    <physics type='ode'>
+        <max_step_size>0.002000</max_step_size>
+        <real_time_factor>1.000000</real_time_factor>
+        <real_time_update_rate>500.000000</real_time_update_rate>
+        <gravity>0 0 -9.81</gravity>
+        <magnetic_field>23.816e-6 -0.41e-6 -39.829e-6</magnetic_field>
+    </physics>
+
+    <!-- <light type="directional" name="sun">
+        <cast_shadows>false</cast_shadows>
+        <pose>0 0 9.5 0 0 0</pose>
+        <diffuse>0.8 0.8 0.8 1</diffuse>
+        <specular>0.2 0.2 0.2 1</specular>
+        <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+        </attenuation>
+        <direction>-0.5 0.1 -0.9</direction>
+    </light> -->
+
+    <model name="ground_plane">
+        <static>true</static>
+        <link name="link">
+            <pose>0 0 -0.05 0 0 0</pose>
+            <collision name="collision">
+                <geometry>
+                    <box>
+                        <size>20 20 0.1</size>
+                    </box>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>20 20 0.1</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+    </model>
+
+    <include>
+        <pose>0 0 0 0 0 0</pose>
+        <uri>model://aruco_6X6_250_1</uri>
+        <name>tag</name>
+    </include>
+
+    <model name="qr">
+        <pose>0 0 0.2 0 0 0</pose>
+        <include>
+            <uri>model://mrsim-quadrotor</uri>
+            <name>qr</name>
+        </include>
+        <!-- <include>
+            <pose>0 0 -0.02 3.1415 0 0</pose>
+            <uri>model://cam</uri>
+            <name>cam</name>
+        </include>
+        <joint name="cam_joint" type="fixed">
+            <parent>qr::base</parent>
+            <child>cam::base</child>
+        </joint> -->
+    </model>
+
+    <plugin name="optitrack" filename="optitrack-gazebo-2.0.so">
+        <hz>1000</hz>
+        <port>1509</port>
+        <publish>
+            <link>qr::qr::base</link>
+            <name>qr</name>
+        </publish>
+        <publish>
+            <link>tag::tag</link>
+            <name>tag</name>
+        </publish>
+    </plugin>
+</world>
+</sdf>

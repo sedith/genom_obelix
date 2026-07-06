@@ -35,11 +35,10 @@ components:
         type: pom
         meas:
             -
-                name: mocap
-                port: mocap/bodies/pcHexa2
-            # -
-            #     name: lidar
-            #     port: ros2/lio
+                # name: mocap
+                # port: mocap/bodies/pcHexa2
+                name: lidar
+                port: ros2/lio
             -
                 name: imu
                 port: rotorcraft/imu

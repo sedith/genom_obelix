@@ -28,6 +28,8 @@ class RobotIO:
         'maneuver': Maneuver,
         'phynt': Phynt,
         'nhfc': Nhfc,
+        'gazebocam': GazeboCam,
+        'arucotag': ArucoTag,
     }
 
     def __init__(self, cfg: str, silent: bool = False):

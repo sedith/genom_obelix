@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+<model name="cam_d455">
+    <link name="base">
+        <inertial>
+            <mass>0.1</mass>
+            <inertia>
+                <ixx>1e-5</ixx><ixy>0</ixy><ixz>0</ixz>
+                <iyy>1e-5</iyy><iyz>0</iyz>
+                <izz>1e-5</izz>
+            </inertia>
+        </inertial>
+
+        <collision name="collision">
+            <pose>0 0 0.04 0 0 0</pose>
+            <geometry>
+                <box><size>0.02 0.02 0.02</size></box>
+            </geometry>
+        </collision>
+
+        <!-- Rotate in order to have the camera looking toward +Z when aligned with worldframe -->
+        <pose>0 0 0 3.1415 0 0</pose>
+
+        <visual name="camera">
+            <pose>0 0 0 0 0 0</pose>
+            <geometry>
+                <box><size>0.02 0.02 0.02</size></box>
+            </geometry>
+            <material>
+                <ambient>0.1 0.1 0.1 1</ambient>
+                <diffuse>1.0 1.0 1.0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="xface">
+            <pose>0.01 0 0 0 0 0</pose>
+            <geometry>
+                <box><size>0.001 0.01 0.01</size></box>
+            </geometry>
+            <material>
+                <ambient>1 0 0 1</ambient>
+                <diffuse>1 0 0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="yface">
+            <pose>0 -0.01 0 0 0 0</pose>
+            <geometry>
+                <box><size>0.01 0.001 0.01</size></box>
+            </geometry>
+            <material>
+                <ambient>0 1 0 1</ambient>
+                <diffuse>0 1 0 1</diffuse>
+            </material>
+        </visual>
+        <visual name="lens">
+            <pose>0 0 -0.01  0 0 0</pose>
+            <geometry>
+                <cylinder><radius>0.008</radius><length>0.01</length></cylinder>
+            </geometry>
+        </visual>
+
+        <sensor name="rgb_cam" type="camera">
+            <pose>0 0 -0.015 1.5708 1.5708 3.1415</pose>
+            <topic>/camera/color/image</topic>
+            <always_on>1</always_on>
+            <update_rate>15</update_rate>
+            <camera name="rgb_cam">
+                <horizontal_fov>1.52</horizontal_fov>
+                <image>
+                    <width>480</width>
+                    <height>270</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>20</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+            </camera>
+        </sensor>
+
+
+        <sensor name="depth_cam" type="depth_camera">
+            <pose>0 0 -0.015 1.5708 1.5708 3.1415</pose>
+            <topic>/camera/depth/image</topic>
+            <always_on>1</always_on>
+            <update_rate>30</update_rate>
+            <camera name="depth_cam">
+                <horizontal_fov>1.52</horizontal_fov>
+                <image>
+                    <width>480</width>
+                    <height>270</height>
+                    <format>R_FLOAT32</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>10</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+            </camera>
+        </sensor>
+    </link>
+</model>
+</sdf>

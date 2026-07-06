@@ -39,16 +39,25 @@ def main():
     mission.spin()
     mission.start(z_start=0.3, ramp_duration=5, prompt=True)
 
-    foo = io.read('rotorcraft', 'rotor_measure')
-    print(foo)
-
-    # mission.goto(-1, 0, 1, 0, duration=0, prompt=True)
-    # mission.goto(-1, 2, 0.75, 1, duration=0, prompt=True)
-    # mission.goto(1, 0, 1, -1, duration=0, prompt=True)
-    # mission.goto(0, -1, 0.8, -2, duration=0, prompt=True)
-    # mission.goto(0, 0, 0.8, -1, duration=0, prompt=True)
-    # mission.goto(0, 0, 0.5, 0, duration=0, prompt=True)
-    # mission.gotoz(z=0.0, prompt=True)
+    mission.goto(
+        -1, 0, 1, 0, 
+        duration=0, prompt=True)
+    mission.goto(
+        -1, 2, 0.75, 1, 
+        duration=0, prompt=True)
+    mission.goto(
+        1, 0, 1, -1,
+        duration=0, prompt=True)
+    mission.goto(
+        0, -1, 0.8, -2,
+        duration=0, prompt=True)
+    mission.goto(
+        0, 0, 0.8, -1,
+        duration=0, prompt=True)
+    mission.goto(
+        0, 0, 0.5, 0,
+        duration=0, prompt=True)
+    mission.gotoz(z=0.1, prompt=True)
 
     mission.stop(prompt=True)
 

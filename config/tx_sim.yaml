@@ -5,7 +5,7 @@ setup:
     - ~/.genom_env.sh
     - /opt/ros/humble/setup.bash
     - ~/work/ws_livox/ros2/install/setup.bash
-    
+
 inertial:
     mass: 3.185
     Jxx: 0.0115
@@ -21,7 +21,7 @@ geom:
     rz: -1
 
 gz:
-    world: tilthex_lidar.world
+    world: tx_lidar.world
     options: -s -r
 
 components:

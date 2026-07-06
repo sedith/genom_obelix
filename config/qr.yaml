@@ -3,11 +3,9 @@ plugin_path: ""
 tmp_path: /tmp/genom_obelix
 setup: 
     - ~/.genom_env.sh
-    - /opt/ros/humble/setup.bash
-    - ~/work/ws_livox/ros2/install/setup.bash
-    
+
 inertial:
-    mass: 1.935
+    mass: 1.67
     Jxx: 0.015
     Jyy: 0.015
     Jzz: 0.007
@@ -21,7 +19,7 @@ geom:
     rz: -1
 
 gz:
-    world: quadrotor_lidar.world
+    world: qr.world
     options: -r
 
 components:

@@ -1,0 +1,84 @@
+host: localhost
+plugin_path: ~/work/genom_devel/lib/genom/pocolibs/plugins
+tmp_path: /tmp/genom_obelix
+setup: 
+    - ~/.genom_env.sh
+    - /opt/ros/humble/setup.bash
+    - ~/work/ws_livox/ros2/install/setup.bash
+
+inertial:
+    mass: 1.77
+    Jxx: 0.015
+    Jyy: 0.015
+    Jzz: 0.007
+
+geom:
+    rotors: 4
+    armlen: 0.23
+    cf: 5.9e-4
+    ct: 1e-5
+    rx: 0
+    rz: -1
+
+gz:
+    world: qr_cam.world
+    options: -r -s 
+
+components:
+    rotorcraft:
+        type: rotorcraft
+        serial: /tmp/pty-qr
+        calib: ""
+
+    mocap:
+        type: optitrack
+        host: localhost
+        port: "1509"
+
+    pom:
+        type: pom
+        meas:
+            -
+                name: mocap
+                port: mocap/bodies/qr
+            -
+                name: imu
+                port: rotorcraft/imu
+                offset: [0, 0, -0.075, 0, 0, 0]
+
+    # gazebocam:
+    #     type: gazebocam
+    #     streams:
+    #         gray: /camera/gray/image
+
+    # arucotag:
+    #     type: arucotag
+    #     cam_to_body_tf: [0, 0, -0.02, 3.1415, 0, 0]
+    #     intrinsics: [480, 270, 1.52]
+    #     output_frame: 2
+    #     markers: [1]
+
+    pom_tag:
+        type: pom
+        meas:
+            -
+                name: tag
+                port: mocap/bodies/tag
+
+remap:
+    rotorcraft.rotor_input: lee/rotor_input
+
+external_publishers:
+    lee_ctrl:
+        target: rotorcraft
+        publisher: rotor_input
+        port: lee/rotor_input
+
+sidecars:
+    lee_ctrl: python3 scripts/lee_accel_control.py visual_int
+
+ros2:
+    enabled: false
+    domain_id: 42
+    launchfiles: []
+    bag: 

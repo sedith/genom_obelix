@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
+        - /lio localmap1
         - /odom pom_mocap1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 1118
@@ -84,14 +84,14 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
+        Max Value: 24.79662322998047
+        Min Value: -1.1871157884597778
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz_default_plugins/PointCloud2
       Color: 255; 255; 255
-      Color Transformer: Intensity
+      Color Transformer: AxisColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -119,7 +119,7 @@ Visualization Manager:
       Enabled: true
       Name: body_mesh
       Namespaces:
-        robot_model: true
+        {}
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -369,25 +369,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10
+      Distance: 47.77753829956055
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.9991264939308167
+        Y: -2.6785247325897217
+        Z: -0.5479593276977539
       Focal Shape Fixed Size: false
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6753983497619629
+      Pitch: 0.915398120880127
       Target Frame: body
       Value: Orbit (rviz)
-      Yaw: 4.0803961753845215
+      Yaw: 3.735395908355713
     Saved: ~
 Window Geometry:
   Displays:
