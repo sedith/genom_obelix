@@ -21,7 +21,7 @@ geom:
     rz: -1
 
 gz:
-    world: tx_lidar.world
+    world: tx_lidar_ee.world
     options: -s -r
 
 components:

@@ -25,11 +25,22 @@ components:
     rotorcraft:
         type: rotorcraft
         serial: /dev/ttyACM0
-        calib: hexa2_260505.json
+        calib: hexa2_260706.json
 
-    mocap:
-        type: qualisys
-        host: 10.135.2.40
+    # mocap:
+    #     type: qualisys
+    #     host: 10.135.2.40
+
+    # pom_mocap:
+    #     type: pom
+    #     meas:
+    #         -
+    #             name: mocap
+    #             port: mocap/bodies/pcHexa2
+    #         -
+    #             name: imu
+    #             port: rotorcraft/imu
+    #             offset: [0, 0, -0.109, 0, 0, 0]
 
     pom:
         type: pom

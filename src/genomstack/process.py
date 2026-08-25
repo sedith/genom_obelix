@@ -190,11 +190,13 @@ class RemoteTmuxRunner:
         with ignore_sigint():
             for name in reversed(list(self.processes.keys())):
                 self.stop(name, timeout=timeout)
+            self._ssh_run(f'tmux kill-session -t {self.session}', check=False)
 
     def kill_all(self) -> None:
         with ignore_sigint():
             for name in reversed(list(self.processes.keys())):
                 self.kill(name)
+            self._ssh_run(f'tmux kill-session -t {self.session}', check=False)
 
     def hang(self, sleep_period=1.0) -> None:
         while True:

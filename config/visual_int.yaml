@@ -7,7 +7,7 @@ setup:
     - ~/work/ws_livox/ros2/install/setup.bash
 
 inertial:
-    mass: 1.77
+    mass: 1.67
     Jxx: 0.015
     Jyy: 0.015
     Jzz: 0.007
@@ -22,7 +22,7 @@ geom:
 
 gz:
     world: qr_cam.world
-    options: -r -s 
+    options: -r
 
 components:
     rotorcraft:
@@ -76,6 +76,7 @@ external_publishers:
 
 sidecars:
     lee_ctrl: python3 scripts/lee_accel_control.py visual_int
+    rviz: rviz2 -d ~/work/misc/visual_interaction/cfg/visual_int.rviz > /dev/null 2>&1
 
 ros2:
     enabled: false

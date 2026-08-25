@@ -37,8 +37,8 @@ class LeeAccelerationControl(Node):
         self.topic = '/genom/accel_ref'
         self.publisher_name = 'lee_ctrl'
         self.rate_hz = 500
-        self.k_r = np.array([2.0, 2.0, 0.8])
-        self.k_w = np.array([0.35, 0.35, 0.25])
+        self.k_r = np.array([5.0, 5.0, 0.8])
+        self.k_w = np.array([0.5, 0.5, 0.25])
         self.max_yawrate = 3.0
         self.min_rotor_speed = 16.0
         self.max_rotor_speed = 110.0
