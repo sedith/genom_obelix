@@ -33,6 +33,7 @@ def main():
     except Exception as e:
         print(f'error: {e}')
         print('killing')
+    finally:
         runner.kill_all()
 
 

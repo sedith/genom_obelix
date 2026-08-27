@@ -25,7 +25,7 @@ components:
     rotorcraft:
         type: rotorcraft
         serial: /dev/ttyACM0
-        calib: hexa2_260706.json
+        calib: hexa2_260825.json
 
     # mocap:
     #     type: qualisys
@@ -77,7 +77,7 @@ components:
     maneuver:
         type: maneuver
         vmax: 1.5
-        wmax: 1
+        wmax: 1.2
         amax: 3
         dwmax: 2
 
@@ -92,7 +92,9 @@ external_publishers:
 
 sidecars:
     lio_relay: python3 scripts/lio_relay.py tilthex /mimosa/odometry
-    rviz_bridge: python3 scripts/rviz_bridge.py tilthex 20
+    domain_bridge: ros2 run domain_bridge domain_bridge ros2/config/rviz_domain_bridge.yaml
+    throttle_pc: ros2 run topic_tools throttle messages /livox/lidar 0.5 /livox/lidar_throttled
+    # rviz_bridge: python3 scripts/rviz_bridge.py tilthex 20
 
 ros2:
     enabled: true

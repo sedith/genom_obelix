@@ -111,7 +111,7 @@ sidecars:
 
 ros2:
     enabled: true
-    domain_id: 42
+    domain_id: 43
     launchfiles:
         - launch_mimosa_gz.py
     bag:

@@ -1,0 +1,21 @@
+from_domain: 42
+to_domain: 43
+
+topics:
+    /mimosa/odometry:
+        type: nav_msgs/msg/Odometry
+
+    /mimosa/odometry_imufreq:
+        type: nav_msgs/msg/Odometry
+
+    /mimosa/local_map:
+        type: sensor_msgs/msg/PointCloud2
+
+    /livox/lidar_throttled:
+        type: sensor_msgs/msg/PointCloud2
+
+    /tf:
+        type: tf2_msgs/msg/TFMessage
+
+    /tf_static:
+        type: tf2_msgs/msg/TFMessage

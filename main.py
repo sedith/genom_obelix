@@ -34,21 +34,45 @@ def main():
     io.setup()
     mission = Mission(io, relative=True, rosbag=True)
 
-    mission.start_logs()
+    try:
+        mission.start_logs()
 
-    mission.spin()
-    mission.start(z_start=0.3, ramp_duration=5, prompt=True)
+        mission.spin()
+        mission.start(z_start=0.3, ramp_duration=8, prompt=True)
 
-    mission.goto(
-        0, 0, 0.5, 2, 
-        duration=0, prompt=True)
-    mission.goto(
-        0, 0, 0.5, -2,
-        duration=0, prompt=True)
-    mission.gotoz(z=0.1, prompt=True)
+        mission.goto(
+            1.5, 0.1, 0.5, 2, 
+            duration=0, prompt=True)
+        mission.goto(
+            -0.5, -0.1, 0.6, -2, 
+            duration=0, prompt=True)
+        mission.goto(
+            2, 0.2, 0.5, 1, 
+            duration=0, prompt=True)
+        mission.goto(
+            -0.5, -0.5, 0.6, -1, 
+            duration=0, prompt=True)
+        mission.goto(
+            1.5, 0.1, 0.5, 2, 
+            duration=0, prompt=True)
+        mission.goto(
+            -0.5, -0.1, 0.6, -2, 
+            duration=0, prompt=True)
+        mission.goto(
+            2, 0.2, 0.5, 1, 
+            duration=0, prompt=True)
+        mission.goto(
+            -0.5, -0.5, 0.6, -1, 
+            duration=0, prompt=True)
 
-    mission.stop(prompt=True)
+        mission.goto(
+            0, 0, 0.5, 0,
+            duration=0, prompt=True)
+        mission.gotoz(z=-0.05, prompt=True)
+        mission.stop(prompt=True)
 
+    except:
+        mission.stop(prompt=False)
 
 if __name__ == '__main__':
     raise SystemExit(main())
