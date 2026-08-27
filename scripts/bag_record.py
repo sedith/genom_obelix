@@ -3,6 +3,7 @@ import os
 import sys
 from genomstack.config import Config
 from genomstack.process import host_path
+import time
 
 
 def main():
@@ -21,7 +22,7 @@ def main():
         print('ros2 bag disabled')
         return 0
 
-    path = host_path(cfg.tmp_path / 'bag', 'localhost')
+    path = host_path(cfg.tmp_path / f'bag_{time.strftime("%y%m%d_%H%M%S")}', 'localhost')
 
     cmd = [
         'ros2',

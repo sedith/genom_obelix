@@ -10,7 +10,7 @@ imu:
     max_buffer_duration: 4
     pose_init_wait_secs: 2
     interpolation_max_ts_diff: 1 # s
-    extrapolation_max_ts_diff: 0.2 # s
+    extrapolation_max_ts_diff: 1 # s
     acc_scale_factor: 1 # Scales the accelerometer measurement. Default is 1, which means no scaling.
   preintegration:
     acc_noise_density: 0.13886655606357616 # [ m / s^2 / sqrt(Hz) ] accel white noise, Livox Mid-360 internal ICM-40609-D

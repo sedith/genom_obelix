@@ -1,0 +1,51 @@
+host: porche
+plugin_path: ~/devel/lib/genom/pocolibs/plugins
+tmp_path: ~/mjacquet/tmp/
+workspace: ~/mjacquet/genom_obelix/
+setup: 
+    - ~/.onepiece.bashrc
+    - /opt/ros/humble/setup.bash
+    - ~/ws_ros_livox/install/setup.bash
+
+inertial:
+    mass: 3.34
+    Jxx: 0.011549
+    Jyy: 0.011368
+    Jzz: 0.019444
+
+geom:
+    rotors: 6
+    armlen: 0.39
+    cf: 11.25e-4
+    ct: 2.4e-5
+    rx: -20
+    rz: -1
+
+components:
+    {}
+
+external_publishers:
+    lidar:
+        target: pom
+        publisher: measure
+        port: ros2/lio
+
+sidecars:
+    lio_relay: python3 scripts/lio_relay.py tilthex /mimosa/odometry
+    rviz_bridge: python3 scripts/rviz_bridge.py tilthex 20
+    bag_record: python3 scripts/bag_record.py tilthex
+
+ros2:
+    enabled: true
+    domain_id: 42
+    launchfiles:
+        - launch_mimosa_livox.py
+    bag:
+        - /tf
+        - /tf_static
+        - /mimosa/odometry
+        - /mimosa/odometry_imufreq
+        - /mimosa/local_map
+        - /livox/lidar
+        - /livox/imu
+        - /genom/pom/odometry

@@ -31,8 +31,6 @@ def main():
         print('killing')
     finally:
         runner.kill_all()
-        runner.run('h2 end', check=False)
-        runner.run(f'rm ~/.*.pid-*', check=False)
 
 
 if __name__ == '__main__':

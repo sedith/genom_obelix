@@ -4,32 +4,23 @@ from genomstack import LocalRunner, Config
 
 
 def main():
-    config_arg = 'tilthex'
+    config_arg = 'tilthex_bridge'
     cfg = Config(config_arg)
 
-    if not cfg.ros2.enabled:
-        print('ros2 disabled')
-        return 0
-
-    runner = LocalRunner(workspace=str(cfg.root), setup=cfg.setup)
+    cfg.tmp_path.expanduser().mkdir(parents=True, exist_ok=True)
+    runner = LocalRunner(workspace=cfg.root, setup=cfg.setup)
+    delay = 0.1
 
     try:
-        for launchfile in cfg.ros2.launchfiles:
-            cmds = [
-                'export ROS_LOCALHOST_ONLY=0',
-                f'export ROS_DOMAIN_ID={cfg.ros2.domain_id}',
-                f'python3 ros2/{launchfile} {cfg.root}/ros2/config/'
-            ]
-            runner.start('ros2', cmds)
-
         for name, sidecar in cfg.sidecars.items():
             cmds = [
                 'export ROS_LOCALHOST_ONLY=0',
                 f'export ROS_DOMAIN_ID={cfg.ros2.domain_id}',
                 sidecar
             ]
-            runner.start(name, cmds, wait=0.5)
+            runner.start(name, cmds, wait=delay)
 
+        print('hanging until ^C...')
         runner.hang()
 
     except KeyboardInterrupt:

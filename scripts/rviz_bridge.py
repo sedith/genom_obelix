@@ -148,9 +148,9 @@ class RvizBridge(Node):
         self.io = RobotIO(config_arg, silent=True)
 
         self.pom_pub = self.create_publisher(Odometry, '/genom/pom/odometry', 10)
-        self.mocap_pub = self.create_publisher(Odometry, '/genom/pom_mocap/odometry', 10)
-        self.ref_man_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
-        self.ref_phynt_pub = self.create_publisher(PoseStamped, '/genom/phynt/desired', 10)
+        # self.mocap_pub = self.create_publisher(Odometry, '/genom/pom_mocap/odometry', 10)
+        # self.ref_man_pub = self.create_publisher(PoseStamped, '/genom/maneuver/desired', 10)
+        # self.ref_phynt_pub = self.create_publisher(PoseStamped, '/genom/phynt/desired', 10)
 
         if 'gz' in self.io.cfg:
             self.model_pub = self.create_publisher(MarkerArray, '/genom/robot_model', 10)
@@ -175,32 +175,32 @@ class RvizBridge(Node):
         except Exception as e:
             self.get_logger().warn(f'failed to publish pom state: {e}')
 
-        try:
-            genom_data = self.io.read('pom_mocap', 'frame/robot')['frame']
-            ros_data = pose_estimator_to_odometry(genom_data, frame_id='map', child_frame_id='body')
-            self.mocap_pub.publish(ros_data)
-        except KeyError:
-            pass
-        except Exception as e:
-            self.get_logger().warn(f'failed to publish pom_mocap state: {e}')
+        # try:
+        #     genom_data = self.io.read('pom_mocap', 'frame/robot')['frame']
+        #     ros_data = pose_estimator_to_odometry(genom_data, frame_id='map', child_frame_id='body')
+        #     self.mocap_pub.publish(ros_data)
+        # except KeyError:
+        #     pass
+        # except Exception as e:
+        #     self.get_logger().warn(f'failed to publish pom_mocap state: {e}')
         
-        try:
-            genom_data = self.io.read('maneuver', 'desired')['desired']
-            ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
-            self.ref_man_pub.publish(ros_data)
-        except KeyError:
-            pass
-        except Exception as e:
-            self.get_logger().warn(f'failed to publish maneuver ref: {e}')
+        # try:
+        #     genom_data = self.io.read('maneuver', 'desired')['desired']
+        #     ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
+        #     self.ref_man_pub.publish(ros_data)
+        # except KeyError:
+        #     pass
+        # except Exception as e:
+        #     self.get_logger().warn(f'failed to publish maneuver ref: {e}')
 
-        try:
-            genom_data = self.io.read('phynt', 'desired')['desired']
-            ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
-            self.ref_phynt_pub.publish(ros_data)
-        except KeyError:
-            pass
-        except Exception as e:
-            self.get_logger().warn(f'failed to publish pom state: {e}')
+        # try:
+        #     genom_data = self.io.read('phynt', 'desired')['desired']
+        #     ros_data = rigid_body_to_pose_stamped(genom_data, frame_id='map')
+        #     self.ref_phynt_pub.publish(ros_data)
+        # except KeyError:
+        #     pass
+        # except Exception as e:
+        #     self.get_logger().warn(f'failed to publish pom state: {e}')
 
 
 def main():

@@ -14,6 +14,9 @@ topics:
     /livox/lidar_throttled:
         type: sensor_msgs/msg/PointCloud2
 
+    /genom/pom/odometry:
+        type: nav_msgs/msg/Odometry
+
     /tf:
         type: tf2_msgs/msg/TFMessage
 
