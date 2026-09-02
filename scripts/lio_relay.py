@@ -25,7 +25,7 @@ class LioRelay(Node):
         self.printed = False
         self.last_msg_time = None
         self.last_warn_time = 0.0
-        self.cov = Cov().from_stds(std_p=0.001, std_eul=0.01, std_v=0.1, std_w=0.05)
+        self.cov = Cov().from_stds(std_p=0.001, std_eul=0.01, std_v=0.02, std_w=0.02)
 
         self.create_subscription(Odometry, self.topic, self.callback, 10)
         self.create_timer(1.0, self.check_rate)

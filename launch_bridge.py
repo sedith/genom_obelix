@@ -16,6 +16,8 @@ def main():
             cmds = [
                 'export ROS_LOCALHOST_ONLY=0',
                 f'export ROS_DOMAIN_ID={cfg.ros2.domain_id}',
+                f'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp',
+                f'export CYCLONEDDS_URI=file:///home/onepiece/mjacquet/genom_obelix/ros2/config/cyclonedds.xml',
                 sidecar
             ]
             runner.start(name, cmds, wait=delay)

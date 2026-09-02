@@ -1,0 +1,14 @@
+<CycloneDDS xmlns="https://cdds.io/config">
+    <Domain Id="any">
+        <General>
+            <Interfaces>
+                <NetworkInterface name="wlP1p1s0"/>
+            </Interfaces>
+            <AllowMulticast>spdp</AllowMulticast>
+        </General>
+        <Internal>
+            <MultipleReceiveThreads>true</MultipleReceiveThreads>
+            <SocketReceiveBufferSize min="8MB"/>
+        </Internal>
+    </Domain>
+</CycloneDDS>
